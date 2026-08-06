@@ -1,20 +1,63 @@
 # Cibi Skills
 
-Personal agent skills. **No publish step** — improve in git, push `main`.
+Agent skills for real engineering — stack-aware, token-efficient, composable.
 
-## Always start here
+[![skills.sh](https://skills.sh/b/C1131-G/skills)](https://skills.sh/C1131-G/skills)
 
-Send **`skill-master/SKILL.md`** on every agent run.
+Install with the open [skills.sh](https://skills.sh) CLI (same flow as [mattpocock/skills](https://github.com/mattpocock/skills)). Pick skills and target agents; files land in your project or global agent dirs.
 
-`skill-master` runs a **balance loop**:
+## Installation (30-second setup)
 
-1. DETECT stack (once)
-2. ALWAYS load `enforce-code-quality` + `enforce-typescript-strict`
-3. ROUTE only skills the project **uses** and the task **touches**
-4. APPLY
-5. CHECK → loop until balanced
+Requires [Node.js](https://nodejs.org/) (`npx` ships with it).
 
-Never load a skill for a library not in the project.
+### Install
+
+```bash
+npx skills@latest add C1131-G/skills
+```
+
+Pick the skills you want and which coding agents to install them on.
+
+**Recommended:** install **all** skills (or at least `skill-master` + always-on + routers you use). Routers only work if their leaf skills are installed too.
+
+### Non-interactive / CI
+
+```bash
+# All skills → all detected agents
+npx skills@latest add C1131-G/skills --all
+
+# All skills → specific agents
+npx skills@latest add C1131-G/skills --skill '*' -a claude-code -a cursor -a grok -y
+
+# Global (every project)
+npx skills@latest add C1131-G/skills --skill '*' -g -y
+```
+
+### List without installing
+
+```bash
+npx skills@latest add C1131-G/skills --list
+```
+
+### Update later
+
+```bash
+npx skills update
+# or one skill:
+npx skills update skill-master
+```
+
+### Local path (offline / fork)
+
+```bash
+npx skills@latest add ./path-to-this-repo --skill '*' -y
+```
+
+## After install
+
+1. **Every agent run** — send / invoke **`skill-master`** first.
+2. `skill-master` runs the balance loop: DETECT stack → ALWAYS load quality + TS → ROUTE only used skills → APPLY → CHECK until balanced.
+3. Never load a skill for a library not in the project.
 
 ## Naming (agent-friendly)
 
@@ -34,9 +77,9 @@ Folder name = frontmatter `name` = path agents load.
 ## Layout
 
 ```
-skill-master/                      # entry — always send this
 skills/
   engineering/
+    skill-master/                  # entry — always send this
     enforce-code-quality/          # always-on
     enforce-typescript-strict/     # always-on
     route-react-async-ui/          # ROUTER → apply-react-* leaves
@@ -56,18 +99,6 @@ skills/
 | `route-backend` | `design-backend-architecture`, `apply-structured-logging`, `document-openapi`, `test-backend` |
 
 Fat skills disclose detail beside `SKILL.md` (e.g. `use-tanstack-query/core.md`). Open disclosed files **only** for the active branch.
-
-## Maintain / improve
-
-```
-use skill on real work
-  → note miss / rush / bloat
-  → fix description or step / Done when
-  → prune no-ops
-  → commit + push main
-```
-
-Commit per skill change. No docs site, no plugin.
 
 ## Skill index
 
@@ -98,3 +129,19 @@ Commit per skill change. No docs site, no plugin.
 | `convert-nextjs-react` | Next ↔ React |
 | `use-nub-vite` | Toolchain |
 | `read-research-paper` | Papers |
+
+## Maintain / improve
+
+```
+use skill on real work
+  → note miss / rush / bloat
+  → fix description or step / Done when
+  → prune no-ops
+  → commit + push main
+```
+
+Commit per skill change. No docs site required — install is always:
+
+```bash
+npx skills@latest add C1131-G/skills
+```

@@ -1,6 +1,10 @@
 # Engineering
 
-Daily code skills. **User-invoked** via `skill-master` (send `skill-master` every run).
+Daily code skills. Install via `npx skills@latest add C1131-G/skills`, then send **`skill-master`** every run.
+
+## Entry
+
+- **[skill-master](./skill-master/SKILL.md)** — balance loop; always send first
 
 ## Routers
 

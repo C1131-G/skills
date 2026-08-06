@@ -10,6 +10,8 @@ disable-model-invocation: true
 
 **Send this skill on every agent run.** Do not write code until the loop below has selected skills and you are applying them.
 
+After `npx skills` install, skills sit as **siblings** under your agent skills dir. Load by skill name or `../<skill-name>/SKILL.md`.
+
 ## Balance loop
 
 Repeat until **balanced** (definition below). Never load a skill whose stack is absent from the project.
@@ -56,8 +58,8 @@ If the library is **not** in the project → **do not load** that skill.
 
 Read and apply, in order:
 
-1. `skills/engineering/enforce-code-quality/SKILL.md`
-2. `skills/engineering/enforce-typescript-strict/SKILL.md` (skip if pure JS)
+1. `../enforce-code-quality/SKILL.md`
+2. `../enforce-typescript-strict/SKILL.md` (skip if pure JS)
 
 ### ROUTE (task + stack)
 
@@ -65,17 +67,17 @@ Load **routers first** when a whole area is involved; they point at leaf skills.
 
 | Trigger | Load |
 |---|---|
-| Interactive / mutating UI, loading UI, Suspense | `skills/engineering/route-react-async-ui/SKILL.md` |
-| Any `useEffect` (write or review) | `skills/engineering/audit-react-effects/SKILL.md` |
-| Any TanStack package in stack + task touches it | `skills/engineering/route-tanstack/SKILL.md` |
-| Backend / API work | `skills/engineering/route-backend/SKILL.md` |
-| Frontend folder structure | `skills/engineering/design-frontend-architecture/SKILL.md` |
-| Zustand client state | `skills/engineering/use-zustand/SKILL.md` |
-| Toasts | `skills/engineering/apply-toasts/SKILL.md` |
-| Native-feel nav / View Transitions | `skills/engineering/apply-native-feel-nav/SKILL.md` |
-| Next.js ↔ React conversion | `skills/engineering/convert-nextjs-react/SKILL.md` |
-| Nub / Vite+ | `skills/engineering/use-nub-vite/SKILL.md` |
-| Research paper | `skills/productivity/read-research-paper/SKILL.md` |
+| Interactive / mutating UI, loading UI, Suspense | `../route-react-async-ui/SKILL.md` |
+| Any `useEffect` (write or review) | `../audit-react-effects/SKILL.md` |
+| Any TanStack package in stack + task touches it | `../route-tanstack/SKILL.md` |
+| Backend / API work | `../route-backend/SKILL.md` |
+| Frontend folder structure | `../design-frontend-architecture/SKILL.md` |
+| Zustand client state | `../use-zustand/SKILL.md` |
+| Toasts | `../apply-toasts/SKILL.md` |
+| Native-feel nav / View Transitions | `../apply-native-feel-nav/SKILL.md` |
+| Next.js ↔ React conversion | `../convert-nextjs-react/SKILL.md` |
+| Nub / Vite+ | `../use-nub-vite/SKILL.md` |
+| Research paper | `../read-research-paper/SKILL.md` |
 
 ### Connections (do not double-load; do not skip)
 
