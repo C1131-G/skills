@@ -4,7 +4,9 @@ Daily code skills. Install via `npx skills@latest add C1131-G/skills`, then send
 
 ## Entry
 
-- **[skill-master](./skill-master/SKILL.md)** — balance loop; always send first
+- **[skill-master](./skill-master/SKILL.md)** — always first
+  - **`skill-master:check`** — all stack-unlocked skills, whole project
+  - **`skill-master:write`** — select skills from **user message + change surface** (stack is only a gate), then apply those only
 
 ## Routers
 

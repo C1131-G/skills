@@ -78,20 +78,23 @@ npx skills@latest add ./path-to-this-repo --skill '*' -y
 
 1. **Every agent run** — invoke **`skill-master` with a suffix**:
    - **`skill-master:check`** — audit/fix so the **whole project** (including old code) matches your skills  
-   - **`skill-master:write`** — implement a task **following** skills (new code + feature neighbors)  
+   - **`skill-master:write`** — implement a task; **select skills from the user message + files you will change**, then follow only those (plus always-on)  
    - bare `skill-master` defaults to **write**
-2. Shared first steps: **understand repo → packages → need skills → file map**. Never load a skill for a library not in the project.
+2. Shared first steps: **understand repo → packages → need skills → file map**.
+   - **`:check`** — NEED = every skill unlocked by the project stack  
+   - **`:write`** — NEED = always-on ∪ (message hints ∪ change-surface hints) ∩ stack. Never load a skill just because the package is installed.
 3. **Break the job** — for each needed skill, walk **rule 1 → all files → lint/typecheck/build gate → rule 2 → …** then next skill. Do not start rule 2 until rule 1 is clean and the gate is green.
 4. **COMPACT after every skill completes** — write a short ledger line, drop file bodies / finished skill text, run host compact if available, then load only the next skill. Keeps context small on long checks.
-5. Single-skill invoke also supports suffixes: e.g. `use-tanstack-query:check`, `enforce-typescript-strict:write`.
+5. Single-skill invoke also supports suffixes: e.g. `use-tanstack-query:check`, `enforce-typescript-strict:write` (that skill + always-on).
 
 ### check vs write
 
 | | `:check` | `:write` |
 |---|---|---|
 | Scope | All relevant project source | Task scope (change + feature neighbors) |
-| Goal | Make **old/existing** code match skills | Ship the feature **following** skills |
-| Loop | skill → each rule → scan → fix → gate → **COMPACT** → next skill | skill → align → write → gate → **COMPACT** |
+| Skill pick | All stack-unlocked skills | **Message + change surface** (stack is only a gate) |
+| Goal | Make **old/existing** code match skills | Ship the feature **following selected** skills |
+| Loop | skill → each rule → scan → fix → gate → **COMPACT** → next skill | select NEED → skill → align → write → gate → **COMPACT** |
 | Gate | lint → fix → typecheck → build before next rule | same after each skill slice (or heavy rule) |
 | Context | Shrink after each skill (ledger only) | Same — no multi-skill context pile-up |
 
