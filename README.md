@@ -69,8 +69,9 @@ npx skills@latest add ./path-to-this-repo --skill '*' -y
 ## After install
 
 1. **Every agent run** — send / invoke **`skill-master`** first.
-2. `skill-master` runs the balance loop: DETECT stack → ALWAYS load quality + TS → ROUTE only used skills → APPLY → CHECK until balanced.
+2. `skill-master` runs the balance loop: DETECT stack → ALWAYS load quality + TS → ROUTE only used skills → **APPLY (write + align existing in-scope code)** → CHECK until balanced.
 3. Never load a skill for a library not in the project.
+4. **Align, don't only write** — when a skill is applied, agents must check existing code in the task's feature/call graph against that skill's rules (and each skill's "Reviewing existing code" section), not only the new diff.
 
 ## Naming (agent-friendly)
 

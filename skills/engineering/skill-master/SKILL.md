@@ -20,18 +20,20 @@ Repeat until **balanced** (definition below). Never load a skill whose stack is 
 1 DETECT   → stack from package.json / lockfile / tree (once per conversation)
 2 ALWAYS   → load always-on skills
 3 ROUTE    → load only skills whose triggers match this task + stack
-4 APPLY    → write/review under those rules only
-5 CHECK    → any open violation or missing rule for touched code?
-           → YES: go to 3 with the gap closed
+4 APPLY    → WRITE new/changed code under those rules
+             + ALIGN existing code in task scope against the same rules
+5 CHECK    → any open violation in the change OR in-scope existing code?
+           → YES: go to 3 with the gap closed (fix, or state exception)
            → NO: balanced — stop
 ```
 
 ### Balanced means
 
-- [ ] Always-on skills applied to every file touched
+- [ ] Always-on skills applied to every file in task scope (not only the diff)
 - [ ] Every stack-matched skill that the task touches was loaded and applied
+- [ ] Existing code in task scope was checked against each loaded skill's rules / "Reviewing existing code" section
 - [ ] No skill loaded for a library the project does not use
-- [ ] No open rule violation left in the change without a stated exception
+- [ ] No open rule violation left in the change **or** in-scope existing code without a stated exception
 
 ### DETECT (once)
 
@@ -97,17 +99,31 @@ route-backend
   → design-backend-architecture | apply-structured-logging | document-openapi | test-backend
 ```
 
-### APPLY
+### APPLY (write + align)
 
-- Follow each selected skill's rules while writing or reviewing.
-- Prefer **one vertical slice** of work; re-run CHECK after the slice.
-- Minimal diffs (`enforce-code-quality`).
+Do **both** on every task. Writing under rules without checking neighbors is not enough.
+
+**Task scope** = files you will touch **plus** the existing files the feature already uses (callers, callees, same feature folder, shared hooks/stores/routes the change depends on). Not the whole repo.
+
+1. **WRITE** — follow each selected skill's rules while implementing.
+2. **ALIGN** — for every loaded skill, run its **Reviewing existing code** / audit / Done-when rules against **task-scope existing code** (before or while writing). Flag or fix misalignment; do not ship new code that copies a local anti-pattern the skill forbids.
+3. Prefer **one vertical slice**; re-run CHECK after the slice.
+4. Minimal diffs (`enforce-code-quality`) — fix in-scope violations that the loaded skills name; do not drive-by rewrite unrelated areas. If a violation is real but out of slice, **state the exception** (file + rule + why deferred).
 
 ### CHECK → loop
 
-Before finishing, scan the change for gaps (wrong stack skill missing, always-on broken, effect that should die, optimistic without transition, etc.). If anything fails → ROUTE the missing skill → APPLY → CHECK again.
+Before finishing, scan **change + task-scope existing code**:
 
-**Done only when balanced.**
+| Check | Fail if |
+|---|---|
+| Skills loaded | Stack-matched skill for this task missing |
+| Always-on | Quality / TS broken in any in-scope file |
+| Skill rules | Loaded skill's "Reviewing existing code" / Done-when still fails on in-scope code |
+| Patterns | e.g. effect that should die, optimistic without transition, fetch in `useEffect`, whole-store select, etc. |
+
+If anything fails → ROUTE the missing skill if needed → APPLY (fix or exception) → CHECK again.
+
+**Done only when balanced.** Agents must not treat "diff is clean" as balanced when nearby existing code in scope still violates a loaded skill.
 
 ## Token rule
 

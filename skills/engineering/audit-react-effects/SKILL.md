@@ -51,4 +51,4 @@ Case-by-case before/after: [CASES.md](CASES.md)
 
 ## Done when
 
-Every touched `useEffect` is justified external sync with named functions, or eliminated.
+Every `useEffect` in **task scope** (files you touch and existing feature neighbors) is justified external sync with named functions, or eliminated — not only effects you just added.

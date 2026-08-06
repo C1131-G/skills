@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # enforce-code-quality
 
-Language-agnostic. Apply to every file touched.
+Language-agnostic. Apply to every file in **task scope** (files you touch and the existing files the feature already depends on — see `skill-master` APPLY).
 
 ## Rules
 
@@ -26,4 +26,4 @@ Language-agnostic. Apply to every file touched.
 
 ## Done when
 
-Touched code respects limits and naming; diffs stay minimal; violations in touched areas flagged or fixed.
+In-scope code (new + existing neighbors the task depends on) respects limits and naming; diffs stay minimal; violations in task scope are fixed or explicitly deferred with a one-line exception.
