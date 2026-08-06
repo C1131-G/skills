@@ -26,4 +26,4 @@ Language-agnostic. Apply to every file in **task scope** (files you touch and th
 
 ## Done when
 
-In-scope code (new + existing neighbors the task depends on) respects limits and naming; diffs stay minimal; violations in task scope are fixed or explicitly deferred with a one-line exception.
+In-scope code respects limits and naming; diffs stay minimal; violations fixed or explicitly deferred. Scope is **task neighbors** under `skill-master:write`, or **all relevant source** under `skill-master:check`. Process rules **1 → N** with a lint/typecheck/build gate between rules when auditing.

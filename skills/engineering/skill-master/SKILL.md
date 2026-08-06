@@ -1,43 +1,53 @@
 ---
 name: skill-master
 description: >
-  Single entry for every agent run. Detects project stack, loads only skills in use,
-  applies rules, balance-loops until done. Always send this skill first.
+  Single entry for every agent run. Invoke as skill-master:check (audit/align
+  whole project to skills) or skill-master:write (implement following skills).
+  Detect stack, load only matching skills, break work rule-by-rule. Always first.
 disable-model-invocation: true
 ---
 
 # skill-master
 
-**Send this skill on every agent run.** Do not write code until the loop below has selected skills and you are applying them.
+**Send this skill first on every agent run.** Do not write product code until mode, stack, and skill list are set.
 
-After `npx skills` install, skills sit as **siblings** under your agent skills dir. Load by skill name or `../<skill-name>/SKILL.md`.
+After `npx skills` install, skills sit as **siblings**. Load by skill name or `../<skill-name>/SKILL.md`.
 
-## Balance loop
+## Invoke with suffix (required)
 
-Repeat until **balanced** (definition below). Never load a skill whose stack is absent from the project.
+Pick **one** mode when you invoke. Suffix is the contract:
+
+| Invoke | Mode | Purpose |
+|---|---|---|
+| `skill-master:check` | **check** | Audit + fix so **existing / old project code** matches skills |
+| `skill-master:write` | **write** | Implement a task **following** skills (new + in-scope neighbors) |
+| `skill-master` only (no suffix) | treat as **write** | Same as `:write` |
+
+Same suffixes work on a **single skill** when you only want that skill:
+
+| Invoke | Meaning |
+|---|---|
+| `<skill>:check` | Run that skill’s rules only (still rule-by-rule + gate) |
+| `<skill>:write` | Write code under that skill’s rules only |
+
+Examples: `enforce-typescript-strict:check`, `use-tanstack-query:write`, `audit-react-effects:check`.
+
+---
+
+## Shared first steps (both modes)
+
+Always do this **before** loading leaf skills or editing:
 
 ```
-1 DETECT   → stack from package.json / lockfile / tree (once per conversation)
-2 ALWAYS   → load always-on skills
-3 ROUTE    → load only skills whose triggers match this task + stack
-4 APPLY    → WRITE new/changed code under those rules
-             + ALIGN existing code in task scope against the same rules
-5 CHECK    → any open violation in the change OR in-scope existing code?
-           → YES: go to 3 with the gap closed (fix, or state exception)
-           → NO: balanced — stop
+1 UNDERSTAND  → read repo shape: README, package.json, app entry, src/ layout, scripts
+2 PACKAGES    → list stack from package.json / lockfile / tree (once per conversation)
+3 NEED SKILLS → only skills whose stack is present (ALWAYS + ROUTE below)
+4 FILE MAP    → know which dirs/files matter (app, features, server, tests) — not node_modules
 ```
 
-### Balanced means
+Never load a skill for a library the project does **not** use.
 
-- [ ] Always-on skills applied to every file in task scope (not only the diff)
-- [ ] Every stack-matched skill that the task touches was loaded and applied
-- [ ] Existing code in task scope was checked against each loaded skill's rules / "Reviewing existing code" section
-- [ ] No skill loaded for a library the project does not use
-- [ ] No open rule violation left in the change **or** in-scope existing code without a stated exception
-
-### DETECT (once)
-
-From `package.json` (and tree if needed), note only what exists:
+### DETECT (packages → skill cluster)
 
 | Signal | Skill cluster |
 |---|---|
@@ -54,24 +64,22 @@ From `package.json` (and tree if needed), note only what exists:
 | nub / vite+ | `use-nub-vite` |
 | research paper task | `read-research-paper` |
 
-If the library is **not** in the project → **do not load** that skill.
+### ALWAYS (every project with that stack)
 
-### ALWAYS (every task)
-
-Read and apply, in order:
+Load and process **in this order** (before routers/leaves):
 
 1. `../enforce-code-quality/SKILL.md`
 2. `../enforce-typescript-strict/SKILL.md` (skip if pure JS)
 
-### ROUTE (task + stack)
+### ROUTE (stack + task / full project)
 
-Load **routers first** when a whole area is involved; they point at leaf skills. Skip leaves the router does not select.
+Load **routers first**; they point at leaves. Skip leaves the router does not select.
 
 | Trigger | Load |
 |---|---|
 | Interactive / mutating UI, loading UI, Suspense | `../route-react-async-ui/SKILL.md` |
 | Any `useEffect` (write or review) | `../audit-react-effects/SKILL.md` |
-| Any TanStack package in stack + task touches it | `../route-tanstack/SKILL.md` |
+| Any TanStack package in stack + relevant | `../route-tanstack/SKILL.md` |
 | Backend / API work | `../route-backend/SKILL.md` |
 | Frontend folder structure | `../design-frontend-architecture/SKILL.md` |
 | Zustand client state | `../use-zustand/SKILL.md` |
@@ -99,32 +107,127 @@ route-backend
   → design-backend-architecture | apply-structured-logging | document-openapi | test-backend
 ```
 
-### APPLY (write + align)
+### Default skill process order (`:check` full project)
 
-Do **both** on every task. Writing under rules without checking neighbors is not enough.
+Run only skills that **NEED SKILLS** selected. Fixed order so always-on and structure land first:
 
-**Task scope** = files you will touch **plus** the existing files the feature already uses (callers, callees, same feature folder, shared hooks/stores/routes the change depends on). Not the whole repo.
+1. `enforce-code-quality`
+2. `enforce-typescript-strict` (if TS)
+3. `design-frontend-architecture` / `design-backend-architecture` (if in need-list)
+4. `audit-react-effects` (if React)
+5. Router families and leaves from DETECT (TanStack, React async UI, Zustand, backend leaves, …)
+6. Remaining matched leaves (toasts, native-feel, nub, convert, …)
 
-1. **WRITE** — follow each selected skill's rules while implementing.
-2. **ALIGN** — for every loaded skill, run its **Reviewing existing code** / audit / Done-when rules against **task-scope existing code** (before or while writing). Flag or fix misalignment; do not ship new code that copies a local anti-pattern the skill forbids.
-3. Prefer **one vertical slice**; re-run CHECK after the slice.
-4. Minimal diffs (`enforce-code-quality`) — fix in-scope violations that the loaded skills name; do not drive-by rewrite unrelated areas. If a violation is real but out of slice, **state the exception** (file + rule + why deferred).
+---
 
-### CHECK → loop
+## Break the job: skill → rule → files → gate
 
-Before finishing, scan **change + task-scope existing code**:
+**Yes — this is the required pattern.** Do not jump ahead.
 
-| Check | Fail if |
+If a skill has **10 rules**, treat each rule as its own mini-task:
+
+```
+for skill in ordered_need_list:
+  load that skill only (or router → selected leaves one at a time)
+  number its rules 1..N (numbered lists, "Rules", Done-when bullets, Reviewing existing code items)
+  for rule R = 1..N:
+    1. SCAN all relevant files for rule R only
+    2. FIX every violation of rule R (or state exception: file + rule + why deferred)
+    3. GATE — project must still be healthy before rule R+1:
+         - edit done for this rule
+         - lint (if project has it)
+         - typecheck (if TS)
+         - build (or project's verify script)
+       If gate fails → fix from this rule's edits; do not start rule R+1
+  only then → next skill
+```
+
+**Relevant files**
+
+| Mode | Scope |
 |---|---|
-| Skills loaded | Stack-matched skill for this task missing |
-| Always-on | Quality / TS broken in any in-scope file |
-| Skill rules | Loaded skill's "Reviewing existing code" / Done-when still fails on in-scope code |
-| Patterns | e.g. effect that should die, optimistic without transition, fetch in `useEffect`, whole-store select, etc. |
+| `:check` | **All project source** that skill applies to (app/src/server/features; exclude `node_modules`, dist, lockfiles) — makes **old projects** match skills |
+| `:write` | **Task scope** = files you change + existing feature neighbors (callers, callees, same feature folder, shared hooks/stores/routes) |
 
-If anything fails → ROUTE the missing skill if needed → APPLY (fix or exception) → CHECK again.
+Never “rule 3 half-done + rule 7 started.” Finish rule R + pass gate, then R+1.
 
-**Done only when balanced.** Agents must not treat "diff is clean" as balanced when nearby existing code in scope still violates a loaded skill.
+---
+
+## Mode: `skill-master:check`
+
+**Goal:** existing / legacy codebase **matches** your skills. Prefer fix over ignore.
+
+```
+UNDERSTAND → PACKAGES → NEED SKILLS → FILE MAP
+  → for each skill in process order:
+       for each rule 1..N:
+         SCAN all relevant files
+         FIX
+         GATE (lint / typecheck / build)
+  → REPORT: skills done, exceptions left, gate status
+```
+
+Rules for check:
+
+- One skill at a time; one rule at a time across **all** applicable files.
+- Use each skill’s **Rules**, **Reviewing existing code**, and **Done when**.
+- After each skill’s last rule passes gate → move to next skill.
+- Full-repo rewrite of unrelated style is still wrong — only what the **current rule** requires (`enforce-code-quality` minimal-diff spirit).
+- If a rule is blocked (third-party, migration debt), record **exception** and continue; do not pretend balanced.
+
+**Done when (check):** every needed skill processed rule-by-rule; gates green (or documented fail); exception list is explicit.
+
+---
+
+## Mode: `skill-master:write`
+
+**Goal:** implement the user task **following** skills; do not copy local anti-patterns.
+
+```
+UNDERSTAND → PACKAGES → NEED SKILLS (task + stack) → FILE MAP (task scope)
+  → for each needed skill (ALWAYS first, then ROUTE leaves):
+       ALIGN task-scope existing code to that skill’s rules (rule-by-rule if many violations)
+       WRITE new/changed code under those rules
+       GATE after each skill slice (or after each rule if the slice is large)
+  → final GATE + balanced check
+```
+
+### Balanced means (write)
+
+- [ ] Always-on applied in task scope
+- [ ] Every stack-matched skill for this task was loaded and applied
+- [ ] Task-scope existing code checked against each loaded skill (not only the diff)
+- [ ] No skill loaded for absent libraries
+- [ ] No open violation in change or task scope without a stated exception
+- [ ] Final lint / typecheck / build OK (or project has no such script — say so)
+
+### Write APPLY
+
+1. **ALIGN** neighbors first so new code does not copy forbidden patterns.
+2. **WRITE** under selected skills only.
+3. Prefer one vertical slice; re-gate after the slice.
+4. Minimal diffs — fix in-scope skill violations; defer out-of-slice with exception.
+
+**Done when (write):** task complete + balanced + final gate green.
+
+---
+
+## Gate (edit → lint → fix → build)
+
+After each **rule** (check mode) or each **skill slice** (write mode):
+
+1. **Edit** — only what the current rule/skill requires  
+2. **Lint** — project lint script if present; fix issues you introduced  
+3. **Typecheck** — `tsc` / `typecheck` if TS  
+4. **Build** (or `test`/`verify` if that is the project’s truth)  
+5. All OK → next rule/skill; fail → fix here, do not advance  
+
+If the repo has no lint/build scripts, run what exists and note what was skipped.
+
+---
 
 ## Token rule
 
-Load the **smallest set** of `SKILL.md` files that covers the task. Open disclosed siblings (`*.md` next to a skill) only when that branch is active. Never load the full library of skills up front.
+Load the **smallest set** of `SKILL.md` files for the **current** skill in the loop. Do not load the full library up front. Open disclosed siblings (`*.md` next to a skill) only when that branch is active.
+
+Routers: load router → load **one** selected leaf → finish that leaf’s rules → next leaf.

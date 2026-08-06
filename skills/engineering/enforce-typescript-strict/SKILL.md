@@ -30,4 +30,4 @@ Flag missing `"strict": true`. Prefer also: `noUncheckedIndexedAccess`, `exactOp
 
 ## Done when
 
-No banned escapes in the change; new server-backed data reuses upstream types when possible.
+No banned escapes in scope (`:write` task scope or `:check` all TS source); new server-backed data reuses upstream types when possible. Under `skill-master`, process rules **1 → N** with a lint/typecheck/build gate between rules when auditing.

@@ -68,10 +68,22 @@ npx skills@latest add ./path-to-this-repo --skill '*' -y
 
 ## After install
 
-1. **Every agent run** — send / invoke **`skill-master`** first.
-2. `skill-master` runs the balance loop: DETECT stack → ALWAYS load quality + TS → ROUTE only used skills → **APPLY (write + align existing in-scope code)** → CHECK until balanced.
-3. Never load a skill for a library not in the project.
-4. **Align, don't only write** — when a skill is applied, agents must check existing code in the task's feature/call graph against that skill's rules (and each skill's "Reviewing existing code" section), not only the new diff.
+1. **Every agent run** — invoke **`skill-master` with a suffix**:
+   - **`skill-master:check`** — audit/fix so the **whole project** (including old code) matches your skills  
+   - **`skill-master:write`** — implement a task **following** skills (new code + feature neighbors)  
+   - bare `skill-master` defaults to **write**
+2. Shared first steps: **understand repo → packages → need skills → file map**. Never load a skill for a library not in the project.
+3. **Break the job** — for each needed skill, walk **rule 1 → all files → lint/typecheck/build gate → rule 2 → …** then next skill. Do not start rule 2 until rule 1 is clean and the gate is green.
+4. Single-skill invoke also supports suffixes: e.g. `use-tanstack-query:check`, `enforce-typescript-strict:write`.
+
+### check vs write
+
+| | `:check` | `:write` |
+|---|---|---|
+| Scope | All relevant project source | Task scope (change + feature neighbors) |
+| Goal | Make **old/existing** code match skills | Ship the feature **following** skills |
+| Loop | skill → each rule → scan all files → fix → gate | skill → align neighbors → write → gate |
+| Gate | lint → fix → typecheck → build before next rule/skill | same after each skill slice (or heavy rule) |
 
 ## Naming (agent-friendly)
 
@@ -86,8 +98,12 @@ npx skills@latest add ./path-to-this-repo --skill '*' -y
 | `audit-` | Review / eliminate anti-patterns |
 | `test-` / `document-` / `convert-` / `read-` | Task verbs |
 
-Folder name = frontmatter `name` = path agents load.
+| Suffix (on invoke) | Meaning |
+|---|---|
+| `:check` | Check/align code against skill rules (old project welcome) |
+| `:write` | Write code following skill rules |
 
+Folder name = frontmatter `name` = path agents load.
 ## Layout
 
 ```
@@ -118,7 +134,7 @@ Fat skills disclose detail beside `SKILL.md` (e.g. `use-tanstack-query/core.md`)
 
 | Skill | Role |
 |---|---|
-| `skill-master` | Entry + balance loop |
+| `skill-master` | Entry — `:check` / `:write` + rule-by-rule gates |
 | `enforce-code-quality` | Always-on quality |
 | `enforce-typescript-strict` | Always-on TS |
 | `route-react-async-ui` | Async UI router |
