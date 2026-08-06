@@ -1,10 +1,23 @@
 # Cibi Skills
 
-Agent skills for real engineering — stack-aware, token-efficient, composable.
+Personal agent skills from **my own knowledge and daily workout** — stack-aware, token-efficient, composable patterns I actually use when building.
 
 [![skills.sh](https://skills.sh/b/C1131-G/skills)](https://skills.sh/C1131-G/skills)
 
 Install with the open [skills.sh](https://skills.sh) CLI (same flow as [mattpocock/skills](https://github.com/mattpocock/skills)). Pick skills and target agents; files land in your project or global agent dirs.
+
+## Disclaimer
+
+> **This is my personal knowledge and practice — not official docs, not a product, not professional advice.**
+
+These skills capture how *I* work: what I learned, tested, and refine over real projects. They may be incomplete, outdated for your stack, or simply **wrong for your context**.
+
+- Treat every skill as **opinionated guidance**, not absolute truth.
+- Always verify against current library docs, your team’s standards, and your project’s needs.
+- Agents can still produce bad code even when a skill is loaded — **you** own the result.
+- No warranty of any kind: fitness, accuracy, or fitness for a particular purpose. Use at your own risk.
+
+**If something is wrong, unclear, or outdated:** open a [GitHub Issue](https://github.com/C1131-G/skills/issues) or PR and guide me — corrections and better patterns are welcome. That’s how this repo improves.
 
 ## Installation (30-second setup)
 
