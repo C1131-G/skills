@@ -29,14 +29,22 @@ Requires [Node.js](https://nodejs.org/) (`npx` ships with it).
 npx skills@latest add C1131-G/skills
 ```
 
-Pick the skills you want and which coding agents to install them on.
-
 **Recommended:** install **all** skills (or at least `skill-master` + always-on + routers you use). Routers only work if their leaf skills are installed too.
 
-### Non-interactive / CI
+#### Interactive picker — select all in one keypress
+
+The repo ships a plugin group so you do **not** need ~25 Space toggles:
+
+1. Highlight the **Cibi Skills** group header (top of the list).
+2. Press **Space once** → every skill in the group is selected (detail text: “Select all N skills…”).
+3. Press **Enter** to confirm, then pick agents as usual.
+
+Arrow keys move; **←** / **→** collapse/expand the group; Space on a single leaf still toggles just that skill.
+
+#### Skip the picker (install everything)
 
 ```bash
-# All skills → all detected agents
+# All skills → all detected agents (no skill multi-select)
 npx skills@latest add C1131-G/skills --all
 
 # All skills → specific agents

@@ -1,0 +1,45 @@
+{
+  "name": "cibi-skills",
+  "owner": {
+    "name": "C1131-G"
+  },
+  "metadata": {
+    "description": "Personal stack-aware agent skills from daily practice",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "cibi-skills",
+      "description": "All skills in this repo. In the installer: highlight this group and press Space once to select every skill.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/engineering/skill-master",
+        "./skills/engineering/enforce-code-quality",
+        "./skills/engineering/enforce-typescript-strict",
+        "./skills/engineering/route-react-async-ui",
+        "./skills/engineering/apply-react-transitions",
+        "./skills/engineering/apply-react-optimistic",
+        "./skills/engineering/apply-react-suspense",
+        "./skills/engineering/audit-react-effects",
+        "./skills/engineering/route-tanstack",
+        "./skills/engineering/use-tanstack-query",
+        "./skills/engineering/use-tanstack-router",
+        "./skills/engineering/use-tanstack-form",
+        "./skills/engineering/use-tanstack-table",
+        "./skills/engineering/use-zustand",
+        "./skills/engineering/design-frontend-architecture",
+        "./skills/engineering/route-backend",
+        "./skills/engineering/design-backend-architecture",
+        "./skills/engineering/apply-structured-logging",
+        "./skills/engineering/document-openapi",
+        "./skills/engineering/test-backend",
+        "./skills/engineering/apply-toasts",
+        "./skills/engineering/apply-native-feel-nav",
+        "./skills/engineering/convert-nextjs-react",
+        "./skills/engineering/use-nub-vite",
+        "./skills/productivity/read-research-paper"
+      ]
+    }
+  ]
+}
