@@ -74,7 +74,8 @@ npx skills@latest add ./path-to-this-repo --skill '*' -y
    - bare `skill-master` defaults to **write**
 2. Shared first steps: **understand repo → packages → need skills → file map**. Never load a skill for a library not in the project.
 3. **Break the job** — for each needed skill, walk **rule 1 → all files → lint/typecheck/build gate → rule 2 → …** then next skill. Do not start rule 2 until rule 1 is clean and the gate is green.
-4. Single-skill invoke also supports suffixes: e.g. `use-tanstack-query:check`, `enforce-typescript-strict:write`.
+4. **COMPACT after every skill completes** — write a short ledger line, drop file bodies / finished skill text, run host compact if available, then load only the next skill. Keeps context small on long checks.
+5. Single-skill invoke also supports suffixes: e.g. `use-tanstack-query:check`, `enforce-typescript-strict:write`.
 
 ### check vs write
 
@@ -82,8 +83,9 @@ npx skills@latest add ./path-to-this-repo --skill '*' -y
 |---|---|---|
 | Scope | All relevant project source | Task scope (change + feature neighbors) |
 | Goal | Make **old/existing** code match skills | Ship the feature **following** skills |
-| Loop | skill → each rule → scan all files → fix → gate | skill → align neighbors → write → gate |
-| Gate | lint → fix → typecheck → build before next rule/skill | same after each skill slice (or heavy rule) |
+| Loop | skill → each rule → scan → fix → gate → **COMPACT** → next skill | skill → align → write → gate → **COMPACT** |
+| Gate | lint → fix → typecheck → build before next rule | same after each skill slice (or heavy rule) |
+| Context | Shrink after each skill (ledger only) | Same — no multi-skill context pile-up |
 
 ## Naming (agent-friendly)
 

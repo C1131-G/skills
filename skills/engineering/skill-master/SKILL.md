@@ -3,7 +3,8 @@ name: skill-master
 description: >
   Single entry for every agent run. Invoke as skill-master:check (audit/align
   whole project to skills) or skill-master:write (implement following skills).
-  Detect stack, load only matching skills, break work rule-by-rule. Always first.
+  Detect stack, load only matching skills, break work rule-by-rule, COMPACT
+  context after every skill completes. Always first.
 disable-model-invocation: true
 ---
 
@@ -139,7 +140,8 @@ for skill in ordered_need_list:
          - typecheck (if TS)
          - build (or project's verify script)
        If gate fails → fix from this rule's edits; do not start rule R+1
-  only then → next skill
+  4. COMPACT — after this skill’s full check is complete (all rules + gate OK):
+       shrink context, keep only the ledger line, then next skill
 ```
 
 **Relevant files**
@@ -164,18 +166,19 @@ UNDERSTAND → PACKAGES → NEED SKILLS → FILE MAP
          SCAN all relevant files
          FIX
          GATE (lint / typecheck / build)
-  → REPORT: skills done, exceptions left, gate status
+       COMPACT  ← required after every skill check completes (keep context small)
+  → REPORT from ledger only: skills done, exceptions left, gate status
 ```
 
 Rules for check:
 
 - One skill at a time; one rule at a time across **all** applicable files.
 - Use each skill’s **Rules**, **Reviewing existing code**, and **Done when**.
-- After each skill’s last rule passes gate → move to next skill.
+- After each skill’s last rule passes gate → **COMPACT** → only then next skill.
 - Full-repo rewrite of unrelated style is still wrong — only what the **current rule** requires (`enforce-code-quality` minimal-diff spirit).
 - If a rule is blocked (third-party, migration debt), record **exception** and continue; do not pretend balanced.
 
-**Done when (check):** every needed skill processed rule-by-rule; gates green (or documented fail); exception list is explicit.
+**Done when (check):** every needed skill processed rule-by-rule; each skill followed by COMPACT; gates green (or documented fail); exception list is explicit in the ledger.
 
 ---
 
@@ -189,7 +192,8 @@ UNDERSTAND → PACKAGES → NEED SKILLS (task + stack) → FILE MAP (task scope)
        ALIGN task-scope existing code to that skill’s rules (rule-by-rule if many violations)
        WRITE new/changed code under those rules
        GATE after each skill slice (or after each rule if the slice is large)
-  → final GATE + balanced check
+       COMPACT after that skill’s work for this task is complete
+  → final GATE + balanced check (from ledger + current slice only)
 ```
 
 ### Balanced means (write)
@@ -220,9 +224,70 @@ After each **rule** (check mode) or each **skill slice** (write mode):
 2. **Lint** — project lint script if present; fix issues you introduced  
 3. **Typecheck** — `tsc` / `typecheck` if TS  
 4. **Build** (or `test`/`verify` if that is the project’s truth)  
-5. All OK → next rule/skill; fail → fix here, do not advance  
+5. All OK → next **rule**; after **last rule of the skill** → COMPACT → next skill  
+6. Gate fail → fix here; do not advance; do not COMPACT until the skill’s check is complete  
 
 If the repo has no lint/build scripts, run what exists and note what was skipped.
+
+---
+
+## COMPACT (harness — keep context small)
+
+**Required after every skill check completes** (all rules for that skill done + final gate for that skill green or exceptions recorded). Also after each skill finishes its slice in `:write`.
+
+Goal: drop bulky working context so the next skill starts lean. Do **not** carry full file bodies, rule-by-rule scan notes, or the finished skill’s full `SKILL.md` into the next skill.
+
+### When
+
+```
+skill rules 1..N done + skill gate OK (or exceptions listed)
+  → COMPACT
+  → load next skill only
+```
+
+Never skip COMPACT to “save a step.” Skipping blows context on long `:check` runs.
+
+### How (run in order)
+
+1. **Ledger line** — append one short block only (keep for the whole run):
+
+```text
+## skill-ledger
+- skill: <name>
+  mode: check|write
+  status: pass | pass-with-exceptions | blocked
+  rules: N/N
+  changed: <path>, <path>   # or none
+  exceptions: <file + rule + why> | none
+  gate: lint/tsc/build OK | skipped:<what>
+```
+
+2. **Drop from working memory / context**
+   - Full contents of files already fixed for this skill (re-read later if needed)
+   - Finished skill’s loaded body and disclosed siblings
+   - Per-rule scan dumps, grep noise, intermediate gate logs
+   - Anything not required for the next skill or final REPORT
+
+3. **Keep only**
+   - UNDERSTAND / PACKAGES / NEED SKILLS list (short)
+   - Full `skill-ledger` (all prior skills)
+   - Open exceptions that later skills must not re-break
+   - Current file map paths (paths only, not bodies)
+
+4. **Host compact** — if the agent harness supports conversation/context compact (e.g. `/compact`, session compact, or “summarize and clear tool output”), **run it now** after writing the ledger line. Prefer host compact over re-pasting large blobs.
+
+5. **Next skill** — load only the next skill’s `SKILL.md`. Do not re-load finished skills unless a later rule needs them.
+
+### Anti-patterns
+
+- Starting the next skill while still holding multi-file dumps from the previous skill  
+- Replacing the ledger with a long narrative essay  
+- COMPACT mid-skill (before all rules of that skill finish) — only after the skill’s check is complete  
+- Deleting exceptions from the ledger  
+
+### Final REPORT
+
+Build the end summary **from the ledger only** (plus last gate). Do not re-scan the whole history of tool output.
 
 ---
 
@@ -230,4 +295,6 @@ If the repo has no lint/build scripts, run what exists and note what was skipped
 
 Load the **smallest set** of `SKILL.md` files for the **current** skill in the loop. Do not load the full library up front. Open disclosed siblings (`*.md` next to a skill) only when that branch is active.
 
-Routers: load router → load **one** selected leaf → finish that leaf’s rules → next leaf.
+Routers: load router → load **one** selected leaf → finish that leaf’s rules → **COMPACT** → next leaf.
+
+COMPACT after each completed skill is part of the token budget — treat it as mandatory harness hygiene, not optional cleanup.
