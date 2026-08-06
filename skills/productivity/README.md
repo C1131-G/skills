@@ -2,4 +2,4 @@
 
 Non-code workflow skills.
 
-- **[research-paper-reading](./research-paper-reading/SKILL.md)** — three-pass paper reading
+- **[read-research-paper](./read-research-paper/SKILL.md)** — three-pass paper reading

@@ -4,43 +4,58 @@ Personal agent skills. **No publish step** — improve in git, push `main`.
 
 ## Always start here
 
-Send **`master/SKILL.md`** on every agent run.
+Send **`skill-master/SKILL.md`** on every agent run.
 
-`master` runs a **balance loop**:
+`skill-master` runs a **balance loop**:
 
 1. DETECT stack (once)
-2. ALWAYS load `code-quality` + `typescript-strict-typing`
+2. ALWAYS load `enforce-code-quality` + `enforce-typescript-strict`
 3. ROUTE only skills the project **uses** and the task **touches**
 4. APPLY
 5. CHECK → loop until balanced
 
 Never load a skill for a library not in the project.
 
-## Layout (Matt-style)
+## Naming (agent-friendly)
+
+| Prefix | Meaning |
+|---|---|
+| `skill-` | Entry / orchestration |
+| `route-` | Router — pick leaves only |
+| `enforce-` | Always-on rules |
+| `apply-` | Apply a pattern while coding |
+| `use-` | Library how-to |
+| `design-` | Structure / layering |
+| `audit-` | Review / eliminate anti-patterns |
+| `test-` / `document-` / `convert-` / `read-` | Task verbs |
+
+Folder name = frontmatter `name` = path agents load.
+
+## Layout
 
 ```
-master/                         # entry — always send this
+skill-master/                      # entry — always send this
 skills/
-  engineering/                  # code work
-    code-quality/               # always-on
-    typescript-strict-typing/   # always-on
-    react-async-ui/             # ROUTER → transitions | optimistic | suspense
-    tanstack/                   # ROUTER → query | router | form | table
-    backend/                    # ROUTER → architecture | logging | openapi | testing
+  engineering/
+    enforce-code-quality/          # always-on
+    enforce-typescript-strict/     # always-on
+    route-react-async-ui/          # ROUTER → apply-react-* leaves
+    route-tanstack/                # ROUTER → use-tanstack-* leaves
+    route-backend/                 # ROUTER → design/apply/document/test leaves
     …leaf skills…
   productivity/
-    research-paper-reading/
+    read-research-paper/
 ```
 
 ### Routers (token efficiency)
 
 | Router | Leaves |
 |---|---|
-| `react-async-ui` | `react-transitions`, `react-optimistic`, `react-suspense` (+ `react-effect-audit` if effects) |
-| `tanstack` | `tanstack-query`, `tanstack-router`, `tanstack-form`, `tanstack-table` |
-| `backend` | `backend-architecture`, `structured-logging`, `openapi-documentation`, `backend-testing` |
+| `route-react-async-ui` | `apply-react-transitions`, `apply-react-optimistic`, `apply-react-suspense` (+ `audit-react-effects` if effects) |
+| `route-tanstack` | `use-tanstack-query`, `use-tanstack-router`, `use-tanstack-form`, `use-tanstack-table` |
+| `route-backend` | `design-backend-architecture`, `apply-structured-logging`, `document-openapi`, `test-backend` |
 
-Fat skills disclose detail beside `SKILL.md` (e.g. `tanstack-query/core.md`). Open disclosed files **only** for the active branch.
+Fat skills disclose detail beside `SKILL.md` (e.g. `use-tanstack-query/core.md`). Open disclosed files **only** for the active branch.
 
 ## Maintain / improve
 
@@ -58,28 +73,28 @@ Commit per skill change. No docs site, no plugin.
 
 | Skill | Role |
 |---|---|
-| `master` | Entry + balance loop |
-| `code-quality` | Always-on quality |
-| `typescript-strict-typing` | Always-on TS |
-| `react-async-ui` | Async UI router |
-| `react-transitions` | useTransition / useActionState |
-| `react-optimistic` | Optimistic updates |
-| `react-suspense` | Suspense / use / deferred |
-| `react-effect-audit` | Kill bad useEffect |
-| `tanstack` | TanStack router |
-| `tanstack-query` | Server state |
-| `tanstack-router` | File routes + loaders |
-| `tanstack-form` | Forms |
-| `tanstack-table` | Tables |
-| `zustand-state` | Client state |
-| `frontend-architecture` | FE folders |
-| `backend` | Backend router |
-| `backend-architecture` | BE layering |
-| `structured-logging` | Logs |
-| `openapi-documentation` | OpenAPI |
-| `backend-testing` | Vitest |
-| `toast-notifications` | Toasts |
-| `native-feel-navigation` | Native-feel nav |
-| `nextjs-react-conversion` | Next ↔ React |
-| `nub-vite-plus` | Toolchain |
-| `research-paper-reading` | Papers |
+| `skill-master` | Entry + balance loop |
+| `enforce-code-quality` | Always-on quality |
+| `enforce-typescript-strict` | Always-on TS |
+| `route-react-async-ui` | Async UI router |
+| `apply-react-transitions` | useTransition / useActionState |
+| `apply-react-optimistic` | Optimistic updates |
+| `apply-react-suspense` | Suspense / use / deferred |
+| `audit-react-effects` | Kill bad useEffect |
+| `route-tanstack` | TanStack router |
+| `use-tanstack-query` | Server state |
+| `use-tanstack-router` | File routes + loaders |
+| `use-tanstack-form` | Forms |
+| `use-tanstack-table` | Tables |
+| `use-zustand` | Client state |
+| `design-frontend-architecture` | FE folders |
+| `route-backend` | Backend router |
+| `design-backend-architecture` | BE layering |
+| `apply-structured-logging` | Logs |
+| `document-openapi` | OpenAPI |
+| `test-backend` | Vitest |
+| `apply-toasts` | Toasts |
+| `apply-native-feel-nav` | Native-feel nav |
+| `convert-nextjs-react` | Next ↔ React |
+| `use-nub-vite` | Toolchain |
+| `read-research-paper` | Papers |

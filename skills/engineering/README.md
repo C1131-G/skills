@@ -1,17 +1,17 @@
 # Engineering
 
-Daily code skills. **User-invoked** via `master` (send master every run).
+Daily code skills. **User-invoked** via `skill-master` (send `skill-master` every run).
 
 ## Routers
 
-- **[react-async-ui](./react-async-ui/SKILL.md)** → transitions, optimistic, suspense
-- **[tanstack](./tanstack/SKILL.md)** → query, router, form, table
-- **[backend](./backend/SKILL.md)** → architecture, logging, openapi, testing
+- **[route-react-async-ui](./route-react-async-ui/SKILL.md)** → apply-react-transitions, apply-react-optimistic, apply-react-suspense
+- **[route-tanstack](./route-tanstack/SKILL.md)** → use-tanstack-query, use-tanstack-router, use-tanstack-form, use-tanstack-table
+- **[route-backend](./route-backend/SKILL.md)** → design-backend-architecture, apply-structured-logging, document-openapi, test-backend
 
-## Always-on (via master)
+## Always-on (via skill-master)
 
-- **[code-quality](./code-quality/SKILL.md)**
-- **[typescript-strict-typing](./typescript-strict-typing/SKILL.md)**
+- **[enforce-code-quality](./enforce-code-quality/SKILL.md)**
+- **[enforce-typescript-strict](./enforce-typescript-strict/SKILL.md)**
 
 ## Leaves
 
