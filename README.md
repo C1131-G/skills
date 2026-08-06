@@ -4,7 +4,7 @@ Personal agent skills from **my own knowledge and daily workout** — stack-awar
 
 [![skills.sh](https://skills.sh/b/C1131-G/skills)](https://skills.sh/C1131-G/skills)
 
-Install with the open [skills.sh](https://skills.sh) CLI (same flow as [mattpocock/skills](https://github.com/mattpocock/skills)). Pick skills and target agents; files land in your project or global agent dirs.
+Install with the open [skills.sh](https://skills.sh) CLI. Pick skills and target agents; files land in your project or global agent dirs.
 
 ## Disclaimer
 
