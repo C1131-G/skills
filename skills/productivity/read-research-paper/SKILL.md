@@ -1,9 +1,21 @@
 ---
 name: read-research-paper
-description: Three-pass research paper reading. Called by skill-master for paper tasks.
+role: main
+description: >
+  MAIN. Modes: bare=audit report, :check=fix notes, :write=apply three-pass paper reading.
 disable-model-invocation: true
 ---
 # read-research-paper
+
+**Main skill** (`role: main`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `read-research-paper` | audit — report only, no edits |
+| `read-research-paper:check` | audit + fix |
+| `read-research-paper:write` | implement / apply under this skill's rules |
+
+On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
 
 Source method: S. Keshav, "How to Read a Paper," ACM SIGCOMM Computer Communication Review, 2007. Apply this instead of reading a paper linearly start-to-finish — each pass has a specific goal, a time budget, and a decision point at the end about whether to continue to the next pass.
 

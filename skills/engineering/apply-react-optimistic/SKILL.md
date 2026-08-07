@@ -1,10 +1,14 @@
 ---
 name: apply-react-optimistic
-description: useOptimistic vs Query onMutate. Part of route-react-async-ui. Called by skill-master for instant mutation feedback.
+role: leaf
+parent: route-react-async-ui
+description: LEAF of route-react-async-ui — not a main skill. useOptimistic vs Query onMutate.
 disable-model-invocation: true
 ---
 
 # apply-react-optimistic
+
+**Leaf — not main.** Parent: `route-react-async-ui`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 | | `useOptimistic` | Query `onMutate` |
 |---|---|---|

@@ -1,400 +1,415 @@
 ---
 name: skill-master
+role: entry
 description: >
-  Single entry for every agent run. Invoke as skill-master:check (audit/align
-  whole project to skills) or skill-master:write (implement following skills
-  selected from the user message and change surface). Detect stack, select only
-  matching skills, break work rule-by-rule, COMPACT after every skill. Always first.
+  Single entry for every agent run. Modes: bare = audit report only;
+  :check = audit+fix; :write = implement. Only MAIN skills are user-invokable;
+  leaves run only under their parent router. Detect stack, select NEED, rule-by-rule,
+  COMPACT after every skill. Always first.
 disable-model-invocation: true
 ---
 
 # skill-master
 
-**Send this skill first on every agent run.** Do not write product code until mode, stack, and **NEED SKILLS** are set.
+**Send this skill first on every agent run.** Do not write product code until **mode**, **stack**, and **NEED** are set.
 
 After `npx skills` install, skills sit as **siblings**. Load by skill name or `../<skill-name>/SKILL.md`.
 
-## Invoke with suffix (required)
+---
 
-Pick **one** mode when you invoke. Suffix is the contract:
+## Main vs leaf (hard rule)
 
-| Invoke | Mode | Purpose |
-|---|---|---|
-| `skill-master:check` | **check** | Audit + fix so **existing / old project code** matches skills |
-| `skill-master:write` | **write** | Implement a task; **select skills from message + changes**, then follow them |
-| `skill-master` only (no suffix) | treat as **write** | Same as `:write` |
+| Kind | Role | User may invoke? | How it runs |
+|---|---|---|---|
+| **Entry** | `skill-master` | Yes | Orchestrates all mains |
+| **Router** | `route-*` | Yes | Decision → load **leaves only** |
+| **Always** | `enforce-*` | Yes (solo or via master) | Quality/TS on every run when stack matches |
+| **Main** | standalone pattern skills | Yes | One skill’s rules only |
+| **Leaf** | child of a router | **No** | Only when parent router Decision selects it |
 
-Same suffixes work on a **single skill** when you only want that skill:
+### MAIN catalog (user may invoke)
 
-| Invoke | Meaning |
+```
+skill-master                          # entry
+route-react-async-ui                  # router → transitions | optimistic | suspense
+route-tanstack                        # router → query | router | form | table
+route-backend                         # router → design-backend | logging | openapi | test
+enforce-code-quality                  # always
+enforce-typescript-strict             # always (TS)
+design-frontend-architecture
+audit-react-effects
+apply-toasts
+apply-native-feel-nav
+apply-next-shell-nav
+use-zustand
+use-nub-vite
+convert-nextjs-react
+read-research-paper
+```
+
+### LEAF catalog (not main — parent only)
+
+| Parent (main) | Leaves (do **not** invoke as main) |
 |---|---|
-| `<skill>:check` | Run that skill’s rules only (still rule-by-rule + gate) |
-| `<skill>:write` | Write code under that skill’s rules only (still ALWAYS if stack matches) |
+| `route-react-async-ui` | `apply-react-transitions`, `apply-react-optimistic`, `apply-react-suspense` |
+| `route-tanstack` | `use-tanstack-query`, `use-tanstack-router`, `use-tanstack-form`, `use-tanstack-table` |
+| `route-backend` | `design-backend-architecture`, `apply-structured-logging`, `document-openapi`, `test-backend` |
 
-Examples: `enforce-typescript-strict:check`, `use-tanstack-query:write`, `audit-react-effects:check`.
+### Leaf redirect (mandatory)
 
-**`:write` rule:** if the invoke is bare `skill-master:write` (or `skill-master`), you **must** select which leaf/router skills apply from the **user message** and the **files you will touch**. Do not load the whole library “because the package is installed.”
+If the user invokes a **leaf** as if it were main (`use-tanstack-query:write`, `apply-react-suspense:check`, bare leaf name):
+
+1. **Do not** treat the leaf as the run entry.
+2. Load the **parent router** with the **same mode** (bare / `:check` / `:write`).
+3. Decision-select **only that leaf** (and required pairs).
+4. In the ledger, record: `invoked-as: <leaf> → parent: <router>`.
+
+Never list leaves in the user-facing “running skills” report as top-level runs. Report the **main** (router or standalone); mention leaves only under that main.
+
+Example: user says `apply-react-optimistic:write` → run `route-react-async-ui:write` with Decision = optimistic only (+ ALWAYS).
 
 ---
 
-## Shared first steps (both modes)
+## Modes (suffix contract)
 
-Always do this **before** loading leaf skills or editing:
+Same three modes on **skill-master** and on every **main** skill:
+
+| Invoke | Mode | Edits? | Purpose |
+|---|---|---|---|
+| `<main>` (no suffix) | **audit** | **No** | Scan rules → **report only** (findings, severity, paths). No product edits. |
+| `<main>:check` | **check** | **Yes** | Audit + **fix** so code matches rules (whole scope for master; skill scope for solo main). |
+| `<main>:write` | **write** | **Yes** | Implement the task following selected skills (message + change surface). |
+
+Bare is **never** write. Bare is **audit report only**.
+
+### skill-master modes
+
+| Invoke | Behavior |
+|---|---|
+| `skill-master` | **audit** — DETECT unlocks → NEED all stack-relevant **mains** → scan every rule → **REPORT only** (no fix) |
+| `skill-master:check` | **check** — same NEED as audit → scan + **fix** rule-by-rule + gate |
+| `skill-master:write` | **write** — NEED from message ∪ change ∩ stack → implement under those mains only |
+
+### Solo main modes
+
+| Invoke | Behavior |
+|---|---|
+| `route-react-async-ui` | audit Decision-matched leaves → report only |
+| `route-react-async-ui:check` | fix under Decision-matched leaves |
+| `route-react-async-ui:write` | implement task under Decision-matched leaves (+ ALWAYS if stack matches) |
+| `enforce-typescript-strict:check` | only that always skill’s rules, fix |
+| `apply-next-shell-nav` | audit that main only → report |
+
+On solo main **write/check/audit**: still load ALWAYS (`enforce-code-quality`, `enforce-typescript-strict` if TS) for write/check; for **audit**, report ALWAYS findings too when stack matches (no fix).
+
+---
+
+## Shared first steps (all modes)
+
+Before loading other skills or editing:
 
 ```
-1 UNDERSTAND  → read repo shape: README, package.json, app entry, src/ layout, scripts
-2 PACKAGES    → list stack from package.json / lockfile / tree (once per conversation)
-3 NEED SKILLS → select skills (mode-specific — see below). Write a short NEED list before loading any leaf
-4 FILE MAP    → paths in scope (write: task files; check: skill-relevant project dirs) — not node_modules
+1 UNDERSTAND  → repo shape: README, package.json, entry, layout, scripts
+2 PACKAGES    → stack from package.json / lockfile / tree (once per conversation)
+3 MODE        → audit | check | write   (from suffix; bare = audit)
+4 NEED MAINS  → select **main** skills only (routers, not leaves) — write NEED list
+5 FILE MAP    → paths in scope
 ```
 
 Never load a skill for a library the project does **not** use.
 
-### DETECT (packages → allowed skill cluster)
+### DETECT (packages → allowed main cluster)
 
-Stack only **unlocks** skills. It does **not** mean every unlocked skill is selected.
+Stack **unlocks** mains. It does not select every unlocked main for write.
 
-| Signal (in project) | May select |
+| Signal | May select (mains) |
 |---|---|
+| any TS/JS | `enforce-code-quality` |
 | TypeScript | `enforce-typescript-strict` |
-| any TS/JS project | `enforce-code-quality` |
-| React | `route-react-async-ui` leaves, `audit-react-effects` when effects appear |
-| `@tanstack/react-query` | `use-tanstack-query` (via `route-tanstack`) |
-| `@tanstack/react-router` | `use-tanstack-router` |
-| `@tanstack/react-form` | `use-tanstack-form` |
-| `@tanstack/react-table` | `use-tanstack-table` |
+| React | `route-react-async-ui`, `audit-react-effects` (when effects), `design-frontend-architecture` |
+| `@tanstack/react-query` / router / form / table | `route-tanstack` (Decision picks leaves) |
 | `zustand` | `use-zustand` |
-| Next.js | Next paths inside selected skills; `convert-nextjs-react` only if conversion task |
-| backend (hono/express/fastify/nest/…) | `route-backend` leaves |
-| vitest (+ backend tests in scope) | `test-backend` |
-| nub / vite+ in use | `use-nub-vite` |
+| Next.js | `apply-next-shell-nav` when shell/sidebar; `convert-nextjs-react` only if conversion task |
+| backend (hono/express/fastify/nest/…) | `route-backend` |
+| sonner / toast usage | `apply-toasts` |
+| view transitions / motion nav | `apply-native-feel-nav` |
+| nub / vite+ | `use-nub-vite` |
 | research paper task | `read-research-paper` |
 
-### ALWAYS (when stack matches — both modes)
+### ALWAYS (write + check; report-only in audit)
 
-Process **before** optional routers/leaves:
+Before optional mains:
 
 1. `../enforce-code-quality/SKILL.md`
 2. `../enforce-typescript-strict/SKILL.md` (skip if pure JS)
 
-In **`:write`**, ALWAYS only on **task-scope** files (not whole repo).
+In **write**, ALWAYS only on **task-scope** files.
 
-### Connections (do not double-load; do not skip when pair is in NEED)
+### Connections (interconnect — load pairs when NEED requires)
 
 ```
 route-react-async-ui
-  → apply-react-transitions | apply-react-optimistic | apply-react-suspense
-  → pairs apply-native-feel-nav (visual VT only)
-  → pairs audit-react-effects if useEffect appears
+  → leaves: apply-react-transitions | apply-react-optimistic | apply-react-suspense
+  → pairs main: apply-native-feel-nav (visual VT only)
+  → pairs main: apply-next-shell-nav (Next dashboard shell; Suspense placement)
+  → pairs main: audit-react-effects if useEffect appears
 
 route-tanstack
-  → use-tanstack-query | use-tanstack-router | use-tanstack-form | use-tanstack-table
-  → query pairs route-react-async-ui (optimistic path)
-  → router pairs audit-react-effects (no useEffect fetch)
-  → query pairs use-zustand (server vs client split)
+  → leaves: use-tanstack-query | use-tanstack-router | use-tanstack-form | use-tanstack-table
+  → pairs main: route-react-async-ui (optimistic / pending UI for mutations)
+  → pairs main: audit-react-effects (no useEffect fetch)
+  → pairs main: use-zustand (server vs client split)
 
 route-backend
-  → design-backend-architecture | apply-structured-logging | document-openapi | test-backend
+  → leaves: design-backend-architecture | apply-structured-logging | document-openapi | test-backend
+  → pairs ALWAYS (enforce-*)
 ```
+
+NEED lists name **mains** (`route-tanstack`), not leaves. Leaves appear only inside the router’s Decision ledger lines.
 
 ---
 
-## NEED SKILLS — mode split
+## NEED MAINS — mode split
 
-### `:check` — stack-wide selection
+### `audit` and `:check` — stack-wide mains
 
-Select every skill whose **stack signal is present** and that applies to the project (ALWAYS + all matching ROUTE clusters). Goal: whole codebase alignment.
+Select every **main** unlocked by DETECT that applies to the project (ALWAYS + matching routers + matching standalones). Goal: full alignment view (audit) or full fix (check).
 
-**Process order (`:check`):**
+**Process order:**
 
 1. `enforce-code-quality`
 2. `enforce-typescript-strict` (if TS)
-3. `design-frontend-architecture` / `design-backend-architecture` (if in need-list)
-4. `audit-react-effects` (if React)
-5. Router families and leaves from DETECT (TanStack, React async UI, Zustand, backend leaves, …)
-6. Remaining matched leaves (toasts, native-feel, nub, convert, …)
+3. `design-frontend-architecture` if React FE structure in scope
+4. `audit-react-effects` if React
+5. Routers from DETECT (`route-react-async-ui`, `route-tanstack`, `route-backend`) — each router Decision-selects its own leaves
+6. Remaining mains: `use-zustand`, `apply-toasts`, `apply-native-feel-nav`, `apply-next-shell-nav`, `use-nub-vite`, `convert-nextjs-react`, …
 
-### `:write` — select from **message** + **change surface** (+ stack gate)
-
-**Required.** Before any product edit, build NEED SKILLS with this formula:
+### `:write` — message + change surface ∩ stack
 
 ```
-candidates = skills hinted by USER MESSAGE
-           ∪ skills hinted by CHANGE SURFACE (paths, imports, symbols you will touch)
-allowed    = candidates ∩ DETECT unlocks (package/stack present)
-NEED       = ALWAYS (stack-matched) ∪ allowed ∪ pair skills required by Connections
+candidates = mains hinted by USER MESSAGE
+           ∪ mains hinted by CHANGE SURFACE
+allowed    = candidates ∩ DETECT unlocks
+NEED       = ALWAYS ∪ allowed ∪ pair mains required by Connections
 ```
 
-**Write a one-line NEED list** (names only) and keep it for the run / ledger. Example:
+Write a one-line NEED of **mains only**:
 
 ```text
-NEED: enforce-code-quality, enforce-typescript-strict, use-tanstack-query, apply-react-optimistic
-SKIP: use-tanstack-table (no table work), route-backend (FE-only task), use-zustand (not in message/change)
+NEED: enforce-code-quality, enforce-typescript-strict, route-tanstack, route-react-async-ui
+SKIP: route-backend (FE-only), use-zustand (not in message/change)
+LEAVES (internal): route-tanstack → query; route-react-async-ui → optimistic
 ```
 
-Do **not** select a skill only because its package is installed. Package must be present **and** the message or change surface must call for it (except ALWAYS).
+#### A. USER MESSAGE → main hints
 
-#### A. USER MESSAGE → skill hints
-
-Read the full user request (and any follow-ups that redefine scope). Map intent → skills:
-
-| Message / intent signals (examples) | Select (if stack allows) |
+| Message / intent | Select main (if stack allows) |
 |---|---|
-| fetch, cache, invalidate, mutation, server state, react-query, query key | `route-tanstack` → `use-tanstack-query` |
-| route, loader, search params, file route, link, navigate | `route-tanstack` → `use-tanstack-router` |
-| form, field validation, canSubmit, Standard Schema | `route-tanstack` → `use-tanstack-form` |
-| table, columns, row model, sorting/pagination (data grid) | `route-tanstack` → `use-tanstack-table` |
-| pending click, useTransition, action state, double-submit | `route-react-async-ui` → `apply-react-transitions` |
-| optimistic, instant UI, rollback | `route-react-async-ui` → `apply-react-optimistic` (+ query if server) |
-| Suspense, skeleton, streaming, deferred value, loading UI | `route-react-async-ui` → `apply-react-suspense` |
-| useEffect, effect cleanup, “runs twice”, sync external | `audit-react-effects` |
-| zustand, client store, slice, global UI state | `use-zustand` |
-| toast, sonner, snackbar notification | `apply-toasts` |
-| view transition, native feel, shared element nav | `apply-native-feel-nav` |
-| API route, controller, service, repository, OpenAPI, pino, backend test | `route-backend` → matching leaves only |
-| folder structure, feature folder, where does this file go | `design-frontend-architecture` and/or `design-backend-architecture` |
-| Next ↔ React, migrate off Next, port component | `convert-nextjs-react` |
-| nub, vite+, toolchain install | `use-nub-vite` |
-| research paper, three-pass reading | `read-research-paper` |
-| “just add a button / copy tweak” with no stack keywords | **ALWAYS only** (unless change surface pulls more) |
+| fetch, cache, invalidate, mutation, server state, react-query | `route-tanstack` → leaf query |
+| route, loader, search params, file route, link | `route-tanstack` → leaf router |
+| form, field validation, canSubmit | `route-tanstack` → leaf form |
+| table, columns, row model, data grid | `route-tanstack` → leaf table |
+| pending click, useTransition, action state | `route-react-async-ui` → leaf transitions |
+| optimistic, instant UI, rollback | `route-react-async-ui` → leaf optimistic |
+| Suspense, skeleton, streaming, deferred | `route-react-async-ui` → leaf suspense |
+| useEffect, “runs twice”, sync external | `audit-react-effects` |
+| zustand, client store, slice | `use-zustand` |
+| toast, sonner | `apply-toasts` |
+| view transition, native feel | `apply-native-feel-nav` |
+| sidebar, nested nav, dashboard shell, private cache, partial prefetch | `apply-next-shell-nav` |
+| API route, controller, service, OpenAPI, pino, backend test | `route-backend` |
+| feature folder, where does this file go (FE) | `design-frontend-architecture` |
+| Next ↔ React convert | `convert-nextjs-react` |
+| nub, vite+ | `use-nub-vite` |
+| research paper | `read-research-paper` |
+| leaf name (e.g. use-tanstack-query) | **parent router** + that leaf only |
+| no stack keywords | ALWAYS only |
 
-If the user **names a skill** or uses a single-skill invoke (`use-tanstack-query:write`), that skill is in NEED (plus ALWAYS).
+#### B. CHANGE SURFACE → main hints
 
-#### B. CHANGE SURFACE → skill hints
-
-Before coding, identify **task paths**: files user named, open diffs, feature folder, or the natural place for the feature. Scan those files (and close neighbors) for:
-
-| Change-surface signals | Select (if stack allows) |
+| Signals in task files | Select main |
 |---|---|
-| imports / usage of `@tanstack/react-query`, `useQuery`, `useMutation` | `use-tanstack-query` |
-| `@tanstack/react-router`, `createFileRoute`, loaders | `use-tanstack-router` |
-| `@tanstack/react-form`, form API | `use-tanstack-form` |
-| `@tanstack/react-table` | `use-tanstack-table` |
-| `zustand` / store hooks | `use-zustand` |
-| `useEffect` in files you will edit | `audit-react-effects` |
-| `useTransition` / `useOptimistic` / `Suspense` / mutations in UI | matching `apply-react-*` |
+| `@tanstack/react-query` / `useMutation` | `route-tanstack` → query |
+| `@tanstack/react-router` / `createFileRoute` | `route-tanstack` → router |
+| `@tanstack/react-form` | `route-tanstack` → form |
+| `@tanstack/react-table` | `route-tanstack` → table |
+| `zustand` | `use-zustand` |
+| `useEffect` | `audit-react-effects` |
+| `useTransition` / `useOptimistic` / `Suspense` | `route-react-async-ui` |
 | toast / sonner | `apply-toasts` |
-| server routes, OpenAPI, logger, `*.test.ts` on API | matching `route-backend` leaves |
-| only CSS/copy in a presentational component | ALWAYS only |
-
-**Union** message hints and change-surface hints, then **intersect** with DETECT.
+| dashboard sidebar / `"use cache: private"` / partialPrefetching | `apply-next-shell-nav` |
+| server routes / OpenAPI / logger / API tests | `route-backend` |
 
 #### C. Re-select when scope expands
 
-If mid-task you open new files, add a library, or the user adds requirements:
-
 ```
 re-run MESSAGE ∪ CHANGE → NEED
-append any new skills; do not drop skills already applied without reason
-COMPACT finished skills before loading newly added ones
+append new mains; COMPACT finished mains before loading new ones
 ```
 
-#### D. Anti-patterns (`:write` selection)
+#### D. Anti-patterns
 
-- Loading all DETECT skills “just in case”
-- Skipping ALWAYS on a TS task
-- Selecting `use-tanstack-table` because Query is installed but the task is a form
-- Ignoring the user message and only grepping the repo
-- Ignoring imports in the files you are about to edit
-- Loading a router and then every leaf without a Decision match
+- Invoking or reporting a **leaf** as a top-level run
+- Loading all DETECT “just in case” on write
+- Skipping ALWAYS on TS write/check
+- Loading every leaf of a router without Decision match
+- Bare mode making edits
 
 #### E. Process order (`:write`)
 
-Only skills on the NEED list, in this order:
-
-1. ALWAYS (`enforce-code-quality`, then `enforce-typescript-strict` if TS)
-2. Structure skills if selected (`design-frontend-architecture`, `design-backend-architecture`)
-3. `audit-react-effects` if selected
-4. Selected routers → **only Decision-matched leaves** (one leaf at a time)
-5. Other selected leaves (zustand, toasts, native-feel, convert, nub, paper, …)
-
-Routers: load router → pick leaves from **Decision + NEED** → load **one** leaf → apply → COMPACT → next leaf.
+1. ALWAYS  
+2. `design-frontend-architecture` if selected  
+3. `audit-react-effects` if selected  
+4. Selected **routers** → Decision leaves one at a time → COMPACT per leaf  
+5. Other selected **mains** (zustand, toasts, shell-nav, …)
 
 ---
 
-## Break the job: skill → rule → files → gate
-
-**Yes — this is the required pattern.** Do not jump ahead.
-
-If a skill has **10 rules**, treat each rule as its own mini-task:
+## Break the job: main → (leaf) → rule → files → gate|report
 
 ```
-for skill in ordered_need_list:
-  load that skill only (or router → selected leaves one at a time)
-  number its rules 1..N (numbered lists, "Rules", Done-when bullets, Reviewing existing code items)
-  for rule R = 1..N:
-    1. SCAN all relevant files for rule R only
-    2. FIX every violation of rule R (or state exception: file + rule + why deferred)
-    3. GATE — project must still be healthy before rule R+1:
-         - edit done for this rule
-         - lint (if project has it)
-         - typecheck (if TS)
-         - build (or project's verify script)
-       If gate fails → fix from this rule's edits; do not start rule R+1
-  4. COMPACT — after this skill’s full check is complete (all rules + gate OK):
-       shrink context, keep only the ledger line, then next skill
+for main in ordered_need:
+  if main is router:
+    Decision → selected leaves
+    for leaf in selected_leaves:
+      apply rules 1..N (mode-dependent)
+      COMPACT leaf
+  else:
+    apply main rules 1..N
+  COMPACT main
 ```
 
-**Relevant files**
+Per rule:
+
+| Mode | Action |
+|---|---|
+| **audit** | SCAN only → record findings (path, rule, severity). **No edit.** No lint gate required; optional typecheck for evidence. |
+| **check** | SCAN → FIX → GATE (lint / tsc / build) |
+| **write** | ALIGN neighbors → WRITE → GATE |
+
+**Scope**
 
 | Mode | Scope |
 |---|---|
-| `:check` | **All project source** that skill applies to (app/src/server/features; exclude `node_modules`, dist, lockfiles) — makes **old projects** match skills |
-| `:write` | **Task scope** = files you change + existing feature neighbors (callers, callees, same feature folder, shared hooks/stores/routes) |
+| skill-master audit / check | All relevant project source for each main |
+| skill-master write | Task scope (change + feature neighbors) |
+| solo main | That main’s domain only (+ ALWAYS on write/check) |
 
-Never “rule 3 half-done + rule 7 started.” Finish rule R + pass gate, then R+1.
+---
+
+## Mode: audit (bare)
+
+**Goal:** report how the codebase stands against skills. **Zero product file edits.**
+
+```
+UNDERSTAND → PACKAGES → MODE=audit → NEED mains → FILE MAP
+  → for each main (routers expand leaves internally):
+       for each rule: SCAN → append findings
+       COMPACT
+  → AUDIT REPORT (from ledger only)
+```
+
+### AUDIT REPORT shape
+
+```text
+# Audit report
+mode: audit
+scope: <paths or "project">
+need: <mains>
+
+## Findings
+- [main|leaf] rule R: <title> — <path> — severity: high|med|low — detail
+
+## Summary
+- mains audited: …
+- findings: N (high/med/low)
+- recommended next: skill-master:check  or  <main>:check
+```
+
+**Done when (audit):** every NEED main scanned; report delivered; no edits.
 
 ---
 
 ## Mode: `skill-master:check`
 
-**Goal:** existing / legacy codebase **matches** your skills. Prefer fix over ignore.
+**Goal:** existing code **matches** skills. Prefer fix over ignore.
 
 ```
-UNDERSTAND → PACKAGES → NEED SKILLS → FILE MAP
-  → for each skill in process order:
-       for each rule 1..N:
-         SCAN all relevant files
-         FIX
-         GATE (lint / typecheck / build)
-       COMPACT  ← required after every skill check completes (keep context small)
-  → REPORT from ledger only: skills done, exceptions left, gate status
+UNDERSTAND → PACKAGES → NEED → FILE MAP
+  → for each main:
+       for each rule: SCAN → FIX → GATE
+       COMPACT
+  → REPORT from ledger
 ```
 
-Rules for check:
-
-- One skill at a time; one rule at a time across **all** applicable files.
-- Use each skill’s **Rules**, **Reviewing existing code**, and **Done when**.
-- After each skill’s last rule passes gate → **COMPACT** → only then next skill.
-- Full-repo rewrite of unrelated style is still wrong — only what the **current rule** requires (`enforce-code-quality` minimal-diff spirit).
-- If a rule is blocked (third-party, migration debt), record **exception** and continue; do not pretend balanced.
-
-**Done when (check):** every needed skill processed rule-by-rule; each skill followed by COMPACT; gates green (or documented fail); exception list is explicit in the ledger.
+**Done when:** all NEED mains processed; COMPACT after each; gates green or exceptions listed.
 
 ---
 
 ## Mode: `skill-master:write`
 
-**Goal:** implement the user task **following skills selected from the message and change surface**; do not copy local anti-patterns; do not drag in unrelated stack skills.
+**Goal:** implement the task under NEED mains from message + change surface.
 
 ```
-UNDERSTAND → PACKAGES → NEED SKILLS (message ∪ change ∩ stack) → write NEED list
-  → FILE MAP (task scope only)
-  → for each skill in write process order (NEED only):
-       load that skill only
-       ALIGN task-scope neighbors to that skill’s rules
-       WRITE new/changed code under those rules
-       GATE after each skill slice (or after each rule if the slice is large)
-       COMPACT after that skill’s work for this task is complete
-  → if scope grew → re-select NEED → continue for new skills only
-  → final GATE + balanced check (from ledger + NEED list + current slice)
+UNDERSTAND → PACKAGES → NEED (message ∪ change ∩ stack) → FILE MAP
+  → for each main:
+       ALIGN → WRITE → GATE → COMPACT
+  → re-select if scope grew
+  → final GATE + balanced check
 ```
 
-### Balanced means (write)
+### Balanced (write)
 
-- [ ] NEED list was written from **message + change surface** (not “all packages”)
-- [ ] Always-on applied in **task scope**
-- [ ] Every skill on NEED was loaded and applied; nothing important on message/change was omitted
-- [ ] No skill loaded for absent libraries
-- [ ] No skill loaded that message+change did not call for (except ALWAYS + required pairs)
-- [ ] Task-scope existing code checked against each loaded skill (not only the new diff)
-- [ ] No open violation in change or task scope without a stated exception
-- [ ] Final lint / typecheck / build OK (or project has no such script — say so)
+- [ ] NEED is **mains** from message + change (not all packages)
+- [ ] Leaves only under routers; never top-level invoke
+- [ ] ALWAYS applied in task scope
+- [ ] No skill for absent libraries
+- [ ] Final lint / typecheck / build OK (or noted skip)
 
-### Write APPLY
-
-1. **SELECT** NEED from message + change surface (gate with stack). State the list.
-2. **ALIGN** neighbors first so new code does not copy forbidden patterns of the **current** skill.
-3. **WRITE** under **selected** skills only.
-4. Prefer one vertical slice; re-gate after the slice.
-5. Minimal diffs — fix in-scope skill violations; defer out-of-slice with exception.
-6. **RE-SELECT** if message or files in scope change.
-
-**Done when (write):** task complete + balanced + final gate green + NEED list matches what was applied.
+**Done when:** task complete + balanced + gate green + NEED matches applied mains.
 
 ---
 
-## Gate (edit → lint → fix → build)
+## Gate (check + write only)
 
-After each **rule** (check mode) or each **skill slice** (write mode):
+1. Edit only what the current rule requires  
+2. Lint if present  
+3. Typecheck if TS  
+4. Build / verify if present  
+5. Fail → fix here; do not advance  
 
-1. **Edit** — only what the current rule/skill requires  
-2. **Lint** — project lint script if present; fix issues you introduced  
-3. **Typecheck** — `tsc` / `typecheck` if TS  
-4. **Build** (or `test`/`verify` if that is the project’s truth)  
-5. All OK → next **rule**; after **last rule of the skill** → COMPACT → next skill  
-6. Gate fail → fix here; do not advance; do not COMPACT until the skill’s check is complete  
-
-If the repo has no lint/build scripts, run what exists and note what was skipped.
+Audit mode skips gate edits.
 
 ---
 
-## COMPACT (harness — keep context small)
+## COMPACT
 
-**Required after every skill check completes** (all rules for that skill done + final gate for that skill green or exceptions recorded). Also after each skill finishes its slice in `:write`.
-
-Goal: drop bulky working context so the next skill starts lean. Do **not** carry full file bodies, rule-by-rule scan notes, or the finished skill’s full `SKILL.md` into the next skill.
-
-### When
-
-```
-skill rules 1..N done + skill gate OK (or exceptions listed)
-  → COMPACT
-  → load next skill only
-```
-
-Never skip COMPACT to “save a step.” Skipping blows context on long `:check` runs.
-
-### How (run in order)
-
-1. **Ledger line** — append one short block only (keep for the whole run):
+Required after each **main** completes (and after each **leaf** under a router).
 
 ```text
 ## skill-ledger
-- need: <comma-separated NEED list for this run>   # write once at start; update if re-select
-- skill: <name>
-  mode: check|write
-  why: message|change|always|pair   # write mode: why this skill was selected
-  status: pass | pass-with-exceptions | blocked
+- need: <mains>
+- mode: audit|check|write
+- skill: <main>                    # never a leaf as top-level skill line
+  leaves: <leaf,…> | none          # only if router
+  why: message|change|always|pair|stack
+  status: pass | pass-with-exceptions | blocked | report-only
   rules: N/N
-  changed: <path>, <path>   # or none
-  exceptions: <file + rule + why> | none
-  gate: lint/tsc/build OK | skipped:<what>
+  findings: N                      # audit
+  changed: <paths> | none          # check/write
+  exceptions: … | none
+  gate: OK | skipped | n/a-audit
 ```
 
-2. **Drop from working memory / context**
-   - Full contents of files already fixed for this skill (re-read later if needed)
-   - Finished skill’s loaded body and disclosed siblings
-   - Per-rule scan dumps, grep noise, intermediate gate logs
-   - Anything not required for the next skill or final REPORT
+Drop finished skill bodies and file dumps. Keep NEED + full ledger + open exceptions.
 
-3. **Keep only**
-   - UNDERSTAND / PACKAGES / **NEED SKILLS list** (short — source of truth for write)
-   - Full `skill-ledger` (all prior skills)
-   - Open exceptions that later skills must not re-break
-   - Current file map paths (paths only, not bodies)
-
-4. **Host compact** — if the agent harness supports conversation/context compact (e.g. `/compact`, session compact, or “summarize and clear tool output”), **run it now** after writing the ledger line. Prefer host compact over re-pasting large blobs.
-
-5. **Next skill** — load only the next skill’s `SKILL.md`. Do not re-load finished skills unless a later rule needs them.
-
-### Anti-patterns
-
-- Starting the next skill while still holding multi-file dumps from the previous skill  
-- Replacing the ledger with a long narrative essay  
-- COMPACT mid-skill (before all rules of that skill finish) — only after the skill’s check is complete  
-- Deleting exceptions from the ledger  
-
-### Final REPORT
-
-Build the end summary **from the ledger only** (plus last gate). Do not re-scan the whole history of tool output.
+Final user summary builds from the **ledger only**. Top-level lines = **mains**.
 
 ---
 
 ## Token rule
 
-Load the **smallest set** of `SKILL.md` files for the **current** skill in the loop. Do not load the full library up front. Open disclosed siblings (`*.md` next to a skill) only when that branch is active.
-
-Routers: load router → load **one** selected leaf → finish that leaf’s rules → **COMPACT** → next leaf.
-
-COMPACT after each completed skill is part of the token budget — treat it as mandatory harness hygiene, not optional cleanup.
+- Load smallest set for **current** main (router → one leaf).  
+- Do not load the full library up front.  
+- Disclosed siblings (`core.md`, …) only when that leaf branch is active.  
+- COMPACT is mandatory harness hygiene.

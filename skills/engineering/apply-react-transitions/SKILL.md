@@ -1,10 +1,14 @@
 ---
 name: apply-react-transitions
-description: useTransition, useActionState, useFormStatus. Part of route-react-async-ui. Called by skill-master when interactive UI.
+role: leaf
+parent: route-react-async-ui
+description: LEAF of route-react-async-ui — not a main skill. useTransition, useActionState, useFormStatus.
 disable-model-invocation: true
 ---
 
 # apply-react-transitions
+
+**Leaf — not main.** Parent: `route-react-async-ui`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 Priority for non-blocking async work — not animation.
 

@@ -1,9 +1,21 @@
 ---
 name: convert-nextjs-react
-description: Convert components between Next.js and plain React. Called by skill-master.
+role: main
+description: >
+  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Convert components between Next.js and plain React.
 disable-model-invocation: true
 ---
 # convert-nextjs-react
+
+**Main skill** (`role: main`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `convert-nextjs-react` | audit — report only, no edits |
+| `convert-nextjs-react:check` | audit + fix |
+| `convert-nextjs-react:write` | implement / apply under this skill's rules |
+
+On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
 
 Apply these rules whenever converting a component from Next.js (App Router) to plain React, or from plain React to Next.js. The two directions have different failure modes — check the matching section below rather than assuming the reverse of one rule is automatically correct for the other.
 

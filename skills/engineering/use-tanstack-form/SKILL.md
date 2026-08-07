@@ -1,9 +1,13 @@
 ---
 name: use-tanstack-form
-description: TanStack Form — Standard Schema, triggers, canSubmit. Called by skill-master / tanstack router.
+role: leaf
+parent: route-tanstack
+description: LEAF of route-tanstack — not a main skill. TanStack Form Standard Schema, triggers, canSubmit.
 disable-model-invocation: true
 ---
 # use-tanstack-form
+
+**Leaf — not main.** Parent: `route-tanstack`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 Apply these rules whenever building or reviewing a form using `@tanstack/react-form`.
 

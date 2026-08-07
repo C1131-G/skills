@@ -1,9 +1,21 @@
 ---
 name: use-nub-vite
-description: Nub + Vite+ toolchain. Called by skill-master when project uses them.
+role: main
+description: >
+  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Nub + Vite+ toolchain.
 disable-model-invocation: true
 ---
 # use-nub-vite
+
+**Main skill** (`role: main`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `use-nub-vite` | audit — report only, no edits |
+| `use-nub-vite:check` | audit + fix |
+| `use-nub-vite:write` | implement / apply under this skill's rules |
+
+On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
 
 Both are 2026, Rust/oxc-powered JS toolchains that look like competitors but occupy different layers — the two are meant to be layered together, not chosen between, for a project that has both a Node-side runtime concern and a browser-facing frontend build.
 

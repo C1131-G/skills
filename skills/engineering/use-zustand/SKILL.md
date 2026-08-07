@@ -1,9 +1,21 @@
 ---
 name: use-zustand
-description: Zustand client state — slices, selectors, not server cache. Called by skill-master.
+role: main
+description: >
+  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Zustand client state — slices, selectors, not server cache.
 disable-model-invocation: true
 ---
 # use-zustand
+
+**Main skill** (`role: main`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `use-zustand` | audit — report only, no edits |
+| `use-zustand:check` | audit + fix |
+| `use-zustand:write` | implement / apply under this skill's rules |
+
+On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
 
 Apply these rules whenever writing or reviewing Zustand stores in a React project.
 

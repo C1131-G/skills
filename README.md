@@ -13,23 +13,19 @@ These skills capture how *I* work: what I learned, tested, and refine over real 
 - Treat every skill as **opinionated guidance**, not absolute truth.
 - Always verify against current library docs, your team’s standards, and your project’s needs.
 - Agents can still produce bad code even when a skill is loaded — **you** own the result.
-- No warranty of any kind: fitness, accuracy, or fitness for a particular purpose. Use at your own risk.
+- No warranty of any kind. Use at your own risk.
 
-**If something is wrong, unclear, or outdated:** open a [GitHub Issue](https://github.com/C1131-G/skills/issues) or PR and guide me — corrections and better patterns are welcome. That’s how this repo improves.
+**If something is wrong, unclear, or outdated:** open a [GitHub Issue](https://github.com/C1131-G/skills/issues) or PR.
 
 ## Installation (30-second setup)
 
 Requires [Node.js](https://nodejs.org/) (`npx` ships with it).
 
-### Install
-
 ```bash
 npx skills@latest add C1131-G/skills
 ```
 
-**Recommended:** install **all** skills (or at least `skill-master` + always-on + routers you use). Routers only work if their leaf skills are installed too.
-
-Pick skills and agents in the interactive installer, or install everything without prompts:
+**Recommended:** install **all** skills (or at least `skill-master` + always-on + routers). Routers only work if their leaf files are installed too.
 
 ```bash
 # All skills → all detected agents
@@ -42,124 +38,165 @@ npx skills@latest add C1131-G/skills --skill '*' -a claude-code -a cursor -a gro
 npx skills@latest add C1131-G/skills --skill '*' -g -y
 ```
 
-### List without installing
-
 ```bash
 npx skills@latest add C1131-G/skills --list
-```
-
-### Update later
-
-```bash
 npx skills update
-# or one skill:
-npx skills update skill-master
 ```
 
-### Local path (offline / fork)
+---
 
-```bash
-npx skills@latest add ./path-to-this-repo --skill '*' -y
-```
+## How to run (read this)
 
-## After install
+### Three modes (every **main** skill)
 
-1. **Every agent run** — invoke **`skill-master` with a suffix**:
-   - **`skill-master:check`** — audit/fix so the **whole project** (including old code) matches your skills  
-   - **`skill-master:write`** — implement a task; **select skills from the user message + files you will change**, then follow only those (plus always-on)  
-   - bare `skill-master` defaults to **write**
-2. Shared first steps: **understand repo → packages → need skills → file map**.
-   - **`:check`** — NEED = every skill unlocked by the project stack  
-   - **`:write`** — NEED = always-on ∪ (message hints ∪ change-surface hints) ∩ stack. Never load a skill just because the package is installed.
-3. **Break the job** — for each needed skill, walk **rule 1 → all files → lint/typecheck/build gate → rule 2 → …** then next skill. Do not start rule 2 until rule 1 is clean and the gate is green.
-4. **COMPACT after every skill completes** — write a short ledger line, drop file bodies / finished skill text, run host compact if available, then load only the next skill. Keeps context small on long checks.
-5. Single-skill invoke also supports suffixes: e.g. `use-tanstack-query:check`, `enforce-typescript-strict:write` (that skill + always-on).
+| Invoke | Mode | Edits? | What happens |
+|---|---|---|---|
+| `skill-name` | **audit** | **No** | Scan rules → **report only** (findings, paths, severity) |
+| `skill-name:check` | **check** | Yes | Audit + **fix** so code matches rules |
+| `skill-name:write` | **write** | Yes | Implement the task following the skill(s) |
 
-### check vs write
+Bare name is **never** write. Bare = **audit report only**.
 
-| | `:check` | `:write` |
+### Main vs leaf
+
+| Kind | Examples | You invoke? |
 |---|---|---|
-| Scope | All relevant project source | Task scope (change + feature neighbors) |
-| Skill pick | All stack-unlocked skills | **Message + change surface** (stack is only a gate) |
-| Goal | Make **old/existing** code match skills | Ship the feature **following selected** skills |
-| Loop | skill → each rule → scan → fix → gate → **COMPACT** → next skill | select NEED → skill → align → write → gate → **COMPACT** |
-| Gate | lint → fix → typecheck → build before next rule | same after each skill slice (or heavy rule) |
-| Context | Shrink after each skill (ledger only) | Same — no multi-skill context pile-up |
+| **Entry** | `skill-master` | Yes — full package run |
+| **Router** | `route-react-async-ui`, `route-tanstack`, `route-backend` | Yes — only the router name |
+| **Always** | `enforce-code-quality`, `enforce-typescript-strict` | Yes (solo or via master) |
+| **Main** | `apply-next-shell-nav`, `use-zustand`, `audit-react-effects`, … | Yes |
+| **Leaf** | `apply-react-suspense`, `use-tanstack-query`, `test-backend`, … | **No** |
 
-## Naming (agent-friendly)
+**Leaves are not mains.** Example: do **not** run `apply-react-suspense:write` as a top-level skill. Run:
+
+```text
+route-react-async-ui:write
+```
+
+The router Decision-loads only the leaves it needs. If you name a leaf by mistake, the agent **redirects to the parent router** with the same mode and selects that leaf only — the report still shows the **router** as the main run.
+
+### skill-master
+
+| Invoke | Behavior |
+|---|---|
+| `skill-master` | **audit** all stack-unlocked mains → report only |
+| `skill-master:check` | audit + **fix** whole project against unlocked mains |
+| `skill-master:write` | implement task; NEED = message ∪ change ∩ stack (**mains only**) |
+
+Every run still: **understand → packages → mode → NEED mains → file map → rule-by-rule → COMPACT**.
+
+### Solo main examples
+
+```text
+route-react-async-ui          # audit async UI family
+route-react-async-ui:check    # fix async UI family
+route-react-async-ui:write    # implement under Decision leaves
+
+route-tanstack:write
+route-backend:check
+enforce-typescript-strict     # audit TS rules only (report)
+apply-next-shell-nav:write
+```
+
+### Interconnect
+
+```
+skill-master
+  ├─ ALWAYS: enforce-code-quality, enforce-typescript-strict
+  ├─ route-react-async-ui
+  │    ├─ leaf apply-react-transitions
+  │    ├─ leaf apply-react-optimistic
+  │    └─ leaf apply-react-suspense
+  │    pairs → apply-native-feel-nav, apply-next-shell-nav, audit-react-effects
+  ├─ route-tanstack
+  │    ├─ leaf use-tanstack-query
+  │    ├─ leaf use-tanstack-router
+  │    ├─ leaf use-tanstack-form
+  │    └─ leaf use-tanstack-table
+  │    pairs → route-react-async-ui, use-zustand, audit-react-effects
+  ├─ route-backend
+  │    ├─ leaf design-backend-architecture
+  │    ├─ leaf apply-structured-logging
+  │    ├─ leaf document-openapi
+  │    └─ leaf test-backend
+  └─ mains: design-frontend-architecture, use-zustand, apply-toasts, …
+```
+
+---
+
+## Naming
 
 | Prefix | Meaning |
 |---|---|
 | `skill-` | Entry / orchestration |
-| `route-` | Router — pick leaves only |
-| `enforce-` | Always-on rules |
-| `apply-` | Apply a pattern while coding |
-| `use-` | Library how-to |
-| `design-` | Structure / layering |
-| `audit-` | Review / eliminate anti-patterns |
-| `test-` / `document-` / `convert-` / `read-` | Task verbs |
+| `route-` | **Main router** — only invokable face of a family |
+| `enforce-` | Always-on main |
+| `apply-` / `use-` / `design-` / `audit-` / … | Main **or** leaf (see role in frontmatter) |
 
-| Suffix (on invoke) | Meaning |
+| Suffix | Meaning |
 |---|---|
-| `:check` | Check/align code against skill rules (old project welcome) |
-| `:write` | Write code following skill rules |
+| *(none)* | **audit** — report only |
+| `:check` | Fix to match rules |
+| `:write` | Implement following rules |
 
-Folder name = frontmatter `name` = path agents load.
+Frontmatter `role:` is `entry` | `router` | `always` | `main` | `leaf`. Leaves also set `parent:`.
+
+---
+
 ## Layout
 
 ```
 skills/
   engineering/
-    skill-master/                  # entry — always send this
-    enforce-code-quality/          # always-on
-    enforce-typescript-strict/     # always-on
-    route-react-async-ui/          # ROUTER → apply-react-* leaves
-    route-tanstack/                # ROUTER → use-tanstack-* leaves
-    route-backend/                 # ROUTER → design/apply/document/test leaves
-    …leaf skills…
+    skill-master/                 # entry
+    enforce-*/                    # always mains
+    route-*/                      # router mains
+    apply-react-*/                # leaves of route-react-async-ui
+    use-tanstack-*/               # leaves of route-tanstack
+    design-backend-*, document-*, test-backend, apply-structured-logging  # leaves of route-backend
+    …other mains…
   productivity/
-    read-research-paper/
+    read-research-paper/          # main
 ```
 
-### Routers (token efficiency)
-
-| Router | Leaves |
-|---|---|
-| `route-react-async-ui` | `apply-react-transitions`, `apply-react-optimistic`, `apply-react-suspense` (+ `audit-react-effects` if effects) |
-| `route-tanstack` | `use-tanstack-query`, `use-tanstack-router`, `use-tanstack-form`, `use-tanstack-table` |
-| `route-backend` | `design-backend-architecture`, `apply-structured-logging`, `document-openapi`, `test-backend` |
-
-Fat skills disclose detail beside `SKILL.md` (e.g. `use-tanstack-query/core.md`). Open disclosed files **only** for the active branch.
+---
 
 ## Skill index
 
+### Entry / routers / always (invoke these)
+
 | Skill | Role |
 |---|---|
-| `skill-master` | Entry — `:check` / `:write` + rule-by-rule gates |
+| `skill-master` | Entry — audit / `:check` / `:write` |
+| `route-react-async-ui` | Router → transitions, optimistic, suspense |
+| `route-tanstack` | Router → query, router, form, table |
+| `route-backend` | Router → design, logging, openapi, test |
 | `enforce-code-quality` | Always-on quality |
 | `enforce-typescript-strict` | Always-on TS |
-| `route-react-async-ui` | Async UI router |
-| `apply-react-transitions` | useTransition / useActionState |
-| `apply-react-optimistic` | Optimistic updates |
-| `apply-react-suspense` | Suspense / use / deferred |
-| `audit-react-effects` | Kill bad useEffect |
-| `route-tanstack` | TanStack router |
-| `use-tanstack-query` | Server state |
-| `use-tanstack-router` | File routes + loaders |
-| `use-tanstack-form` | Forms |
-| `use-tanstack-table` | Tables |
-| `use-zustand` | Client state |
+
+### Other mains (invoke these)
+
+| Skill | Role |
+|---|---|
 | `design-frontend-architecture` | FE folders |
-| `route-backend` | Backend router |
-| `design-backend-architecture` | BE layering |
-| `apply-structured-logging` | Logs |
-| `document-openapi` | OpenAPI |
-| `test-backend` | Vitest |
+| `audit-react-effects` | Kill bad useEffect |
 | `apply-toasts` | Toasts |
 | `apply-native-feel-nav` | Native-feel nav |
-| `convert-nextjs-react` | Next ↔ React |
+| `apply-next-shell-nav` | Next shell + nested sidebar |
+| `use-zustand` | Client state |
 | `use-nub-vite` | Toolchain |
+| `convert-nextjs-react` | Next ↔ React |
 | `read-research-paper` | Papers |
+
+### Leaves (do **not** invoke as main — parent only)
+
+| Parent | Leaves |
+|---|---|
+| `route-react-async-ui` | `apply-react-transitions`, `apply-react-optimistic`, `apply-react-suspense` |
+| `route-tanstack` | `use-tanstack-query`, `use-tanstack-router`, `use-tanstack-form`, `use-tanstack-table` |
+| `route-backend` | `design-backend-architecture`, `apply-structured-logging`, `document-openapi`, `test-backend` |
+
+---
 
 ## Maintain / improve
 
@@ -170,8 +207,6 @@ use skill on real work
   → prune no-ops
   → commit + push main
 ```
-
-Commit per skill change. No docs site required — install is always:
 
 ```bash
 npx skills@latest add C1131-G/skills

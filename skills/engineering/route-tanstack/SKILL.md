@@ -1,33 +1,64 @@
 ---
 name: route-tanstack
+role: router
 description: >
-  TanStack router skill. Routes to use-tanstack-query, use-tanstack-router,
-  use-tanstack-form, use-tanstack-table. Only load leaves the task needs. Called by skill-master.
+  MAIN router for TanStack. Invoke this skill only (not its leaves).
+  Modes: bare=audit report, :check=fix, :write=implement. Decision-loads
+  use-tanstack-query | use-tanstack-router | use-tanstack-form | use-tanstack-table.
 disable-model-invocation: true
 ---
 
 # route-tanstack
 
-Load **only** the sub-skills the task needs. Skip packages not in the project.
+**Main skill.** User invokes **this** name. Leaves are **not** mains.
+
+| Invoke | Mode |
+|---|---|
+| `route-tanstack` | audit — report only |
+| `route-tanstack:check` | audit + fix |
+| `route-tanstack:write` | implement under Decision leaves |
+
+If the user names a leaf (`use-tanstack-query`, …), **redirect here** with the same mode and Decision-select that leaf only.
+
+Skip packages not in the project. On write/check: apply ALWAYS in scope.
+
+## Leaves (internal only)
+
+| Leaf | Load when |
+|---|---|
+| `../use-tanstack-query/SKILL.md` | Server state, `useQuery`/`useMutation`, keys, cache |
+| `../use-tanstack-router/SKILL.md` | File routes, loaders, typed params/search, prefetch |
+| `../use-tanstack-form/SKILL.md` | Forms, Standard Schema, field/form split |
+| `../use-tanstack-table/SKILL.md` | Headless tables, row models, server mode |
+
+Load **only** Decision-matched leaves. One at a time → COMPACT between leaves.
 
 ## Decision
 
-| Task | Read |
+| Task | Leaf |
 |---|---|
-| Server state, `useQuery`/`useMutation`, keys, cache | `../use-tanstack-query/SKILL.md` |
-| File routes, loaders, typed params/search, prefetch | `../use-tanstack-router/SKILL.md` |
-| Forms, Standard Schema, field/form split | `../use-tanstack-form/SKILL.md` |
-| Headless tables, row models, server mode | `../use-tanstack-table/SKILL.md` |
+| Server state, cache, mutations | query |
+| File routes, loaders, typed search | router |
+| Forms, validation, canSubmit | form |
+| Headless tables, row models | table |
 
-## Connections
+## Connections (pair mains)
 
 | Pair | Rule |
 |---|---|
-| query + `route-react-async-ui` | Mutations / optimistic UI live in async-ui; query owns cache keys + invalidation |
-| router + query | Loader: `ensureQueryData` / `prefetchQuery`; component: `useSuspenseQuery` same `queryOptions` — never `useLoaderData` alone for Query data |
-| router + `audit-react-effects` | No `useEffect` for route data |
-| query + `use-zustand` | Server state in Query; client UI state in Zustand — never both for the same data |
+| + `route-react-async-ui` | Mutations / optimistic / pending UI live in async-ui; query owns keys + invalidation |
+| query + router leaves | Loader: `ensureQueryData` / `prefetchQuery`; component: `useSuspenseQuery` same `queryOptions` |
+| + `audit-react-effects` | No `useEffect` for route or server data |
+| + `use-zustand` | Server state in Query; client UI in Zustand — never both for the same data |
+
+## Mode behavior
+
+| Mode | Action |
+|---|---|
+| audit | Scan selected leaves → report; no edits |
+| check | Fix leaf rules + gate |
+| write | Implement under selected leaves + gate |
 
 ## Done when
 
-Selected leaf skills applied; unused TanStack packages not loaded.
+Selected leaves applied under this main; unused TanStack packages not loaded; leaves not top-level in the user report.

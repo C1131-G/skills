@@ -1,10 +1,22 @@
 ---
 name: enforce-typescript-strict
-description: Always-on TypeScript — unknown over any, no as/enum/!, inference-first, exhaustive unions, runtime validation at boundaries. Called by skill-master on every TS task.
+role: always
+description: >
+  MAIN always-on for TS. Modes: bare=audit report, :check=fix, :write=apply. unknown, no as/enum/!, inference, exhaustive unions, boundary validation.
 disable-model-invocation: true
 ---
 
 # enforce-typescript-strict
+
+**Main skill** (`role: always`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `enforce-typescript-strict` | audit - report only, no edits |
+| `enforce-typescript-strict:check` | audit + fix |
+| `enforce-typescript-strict:write` | implement / apply under this skill's rules |
+
+On write/check, ALWAYS (enforce-*) still applies when stack matches. Not a leaf - invoke by this name.
 
 Apply to all TypeScript written or reviewed.
 

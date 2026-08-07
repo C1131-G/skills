@@ -1,9 +1,21 @@
 ---
 name: apply-native-feel-nav
-description: Native-feel nav — View Transitions, Motion. Called by skill-master / route-react-async-ui.
+role: main
+description: >
+  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Native-feel nav — View Transitions, Motion.
 disable-model-invocation: true
 ---
 # apply-native-feel-nav
+
+**Main skill** (`role: main`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `apply-native-feel-nav` | audit — report only, no edits |
+| `apply-native-feel-nav:check` | audit + fix |
+| `apply-native-feel-nav:write` | implement / apply under this skill's rules |
+
+On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
 
 Apply these rules whenever building or reviewing navigation transitions/gestures meant to make a React SPA feel like a native mobile app, regardless of which router is in use.
 

@@ -1,10 +1,14 @@
 ---
 name: use-tanstack-query
-description: TanStack Query — keys, queryOptions, cache, mutations. Use when the project has @tanstack/react-query and the task touches server state. Called by skill-master / tanstack router.
+role: leaf
+parent: route-tanstack
+description: LEAF of route-tanstack — not a main skill. TanStack Query keys, queryOptions, cache, mutations.
 disable-model-invocation: true
 ---
 
 # use-tanstack-query
+
+**Leaf — not main.** Parent: `route-tanstack`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 Apply when writing or reviewing server-state code. **Load disclosed files only for the branch you need.**
 

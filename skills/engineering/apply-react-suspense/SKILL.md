@@ -1,10 +1,14 @@
 ---
 name: apply-react-suspense
-description: Suspense boundaries, Error Boundary, use, useDeferredValue. Part of route-react-async-ui. Called by skill-master for loading UI.
+role: leaf
+parent: route-react-async-ui
+description: LEAF of route-react-async-ui — not a main skill. Suspense, Error Boundary, use, useDeferredValue.
 disable-model-invocation: true
 ---
 
 # apply-react-suspense
+
+**Leaf — not main.** Parent: `route-react-async-ui`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 ## Fresh load vs updating
 

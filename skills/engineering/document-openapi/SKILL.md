@@ -1,9 +1,13 @@
 ---
 name: document-openapi
-description: OpenAPI 3.1 from code, startup links. Called by skill-master / backend router.
+role: leaf
+parent: route-backend
+description: LEAF of route-backend — not a main skill. OpenAPI 3.1 from code, startup links.
 disable-model-invocation: true
 ---
 # document-openapi
+
+**Leaf — not main.** Parent: `route-backend`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 Apply these rules whenever documenting an HTTP API, regardless of language or framework. "Swagger" here refers to the OpenAPI ecosystem in general (tooling like Swagger UI); the specification itself is called OpenAPI.
 

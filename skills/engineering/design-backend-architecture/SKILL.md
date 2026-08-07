@@ -1,9 +1,13 @@
 ---
 name: design-backend-architecture
-description: Feature modules, routes→controller→service→repository. Called by skill-master / backend router.
+role: leaf
+parent: route-backend
+description: LEAF of route-backend — not a main skill. Feature modules, routes→controller→service→repository.
 disable-model-invocation: true
 ---
 # design-backend-architecture
+
+**Leaf — not main.** Parent: `route-backend`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 Apply these rules whenever designing or reviewing the folder structure and request flow of a backend/API service, regardless of framework (Express, Hono, Fastify, NestJS, etc.) or database layer.
 

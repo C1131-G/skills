@@ -1,9 +1,21 @@
 ---
 name: apply-toasts
-description: Sonner toasts — when to toast, a11y, motion. Called by skill-master.
+role: main
+description: >
+  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Sonner toasts — when, a11y, motion.
 disable-model-invocation: true
 ---
 # apply-toasts
+
+**Main skill** (`role: main`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `apply-toasts` | audit — report only, no edits |
+| `apply-toasts:check` | audit + fix |
+| `apply-toasts:write` | implement / apply under this skill's rules |
+
+On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
 
 Apply these rules whenever adding or reviewing toast/notification UI in a React project.
 

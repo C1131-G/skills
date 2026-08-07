@@ -1,9 +1,13 @@
 ---
 name: test-backend
-description: Vitest pyramid, DB isolation, AAA. Called by skill-master / backend router.
+role: leaf
+parent: route-backend
+description: LEAF of route-backend — not a main skill. Vitest pyramid, DB isolation, AAA.
 disable-model-invocation: true
 ---
 # test-backend
+
+**Leaf — not main.** Parent: `route-backend`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 Apply these rules whenever writing or reviewing backend tests. Assumes Vitest as the test runner, per the project's stack.
 

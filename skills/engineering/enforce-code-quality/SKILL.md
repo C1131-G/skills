@@ -1,10 +1,22 @@
 ---
 name: enforce-code-quality
-description: Always-on code quality — minimal diffs, file/function limits, naming, DRY/KISS/YAGNI. Called by skill-master on every task.
+role: always
+description: >
+  MAIN always-on. Modes: bare=audit report, :check=fix, :write=apply. Minimal diffs, file/function limits, naming, DRY/KISS/YAGNI.
 disable-model-invocation: true
 ---
 
 # enforce-code-quality
+
+**Main skill** (`role: always`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `enforce-code-quality` | audit - report only, no edits |
+| `enforce-code-quality:check` | audit + fix |
+| `enforce-code-quality:write` | implement / apply under this skill's rules |
+
+On write/check, ALWAYS (enforce-*) still applies when stack matches. Not a leaf - invoke by this name.
 
 Language-agnostic. Apply to every file in **task scope** (files you touch and the existing files the feature already depends on — see `skill-master` APPLY).
 
@@ -26,4 +38,4 @@ Language-agnostic. Apply to every file in **task scope** (files you touch and th
 
 ## Done when
 
-In-scope code respects limits and naming; diffs stay minimal; violations fixed or explicitly deferred. Scope is **task neighbors** under `skill-master:write`, or **all relevant source** under `skill-master:check`. Process rules **1 → N** with a lint/typecheck/build gate between rules when auditing.
+In-scope code respects limits and naming; diffs stay minimal; violations fixed or explicitly deferred. Scope: task neighbors on write; all relevant source on check/audit. Mode **audit** = report only; **check/write** = fix/apply with gate between rules **1 → N**.

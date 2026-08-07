@@ -1,10 +1,22 @@
 ---
 name: audit-react-effects
-description: useEffect audit — external sync only, named functions, eliminate the rest. Called by skill-master / route-react-async-ui / use-tanstack-router.
+role: main
+description: >
+  MAIN. Modes: bare=audit report, :check=fix, :write=apply. useEffect external sync only; eliminate the rest.
 disable-model-invocation: true
 ---
 
 # audit-react-effects
+
+**Main skill** (`role: main`). Modes:
+
+| Invoke | Mode |
+|---|---|
+| `audit-react-effects` | audit - report only, no edits |
+| `audit-react-effects:check` | audit + fix |
+| `audit-react-effects:write` | implement / apply under this skill's rules |
+
+On write/check, ALWAYS (enforce-*) still applies when stack matches. Not a leaf - invoke by this name.
 
 > Before another `useEffect`: **is this syncing with an external system?** If not, use a better pattern.
 

@@ -1,9 +1,13 @@
 ---
 name: use-tanstack-router
-description: File routes, loaders + Query, typed search. Called by skill-master / tanstack router.
+role: leaf
+parent: route-tanstack
+description: LEAF of route-tanstack — not a main skill. File routes, loaders + Query, typed search.
 disable-model-invocation: true
 ---
 # use-tanstack-router
+
+**Leaf — not main.** Parent: `route-tanstack`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
 
 Apply these rules whenever building or reviewing routing in a project that uses TanStack Router, paired with TanStack Query for server state. Assumes the `routes/` and `features/` folder split from `design-frontend-architecture`.
 
