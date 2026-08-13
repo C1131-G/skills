@@ -1,13 +1,12 @@
 ---
 name: use-tanstack-table
-role: leaf
-parent: route-tanstack
-description: LEAF of route-tanstack — not a main skill. TanStack Table headless, row models, server mode.
-disable-model-invocation: true
+description: Use TanStack Table for headless, typed data tables, row models, selection, sorting, filtering, pagination, and server-driven table state.
 ---
 # use-tanstack-table
 
-**Leaf — not main.** Parent: `route-tanstack`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for TanStack Table. Pair it with `use-tanstack-query` when table data or pagination is server-driven.
+
+Also apply `enforce-code-quality` and `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever building or reviewing a data table using `@tanstack/react-table`.
 

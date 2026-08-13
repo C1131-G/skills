@@ -1,21 +1,12 @@
 ---
 name: use-zustand
-role: main
-description: >
-  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Zustand client state — slices, selectors, not server cache.
-disable-model-invocation: true
+description: Use Zustand for client-only React state with slices, selectors, stable actions, and clear separation from server caches. Use when building or reviewing Zustand stores.
 ---
 # use-zustand
 
-**Main skill** (`role: main`). Modes:
+Use this skill directly for Zustand state. Pair it with `use-tanstack-query` to keep client state and server state in their proper owners.
 
-| Invoke | Mode |
-|---|---|
-| `use-zustand` | audit — report only, no edits |
-| `use-zustand:check` | audit + fix |
-| `use-zustand:write` | implement / apply under this skill's rules |
-
-On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
+Also apply `enforce-code-quality` and `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever writing or reviewing Zustand stores in a React project.
 

@@ -1,21 +1,12 @@
 ---
 name: convert-nextjs-react
-role: main
-description: >
-  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Convert components between Next.js and plain React.
-disable-model-invocation: true
+description: Convert components between Next.js App Router and plain React. Use when translating routing, data fetching, Server Components, Server Actions, images, fonts, metadata, and framework APIs.
 ---
 # convert-nextjs-react
 
-**Main skill** (`role: main`). Modes:
+Use this skill directly for Next.js-to-React or React-to-Next.js conversions. Pair it with the target router, data, and architecture skills that match the destination stack.
 
-| Invoke | Mode |
-|---|---|
-| `convert-nextjs-react` | audit — report only, no edits |
-| `convert-nextjs-react:check` | audit + fix |
-| `convert-nextjs-react:write` | implement / apply under this skill's rules |
-
-On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever converting a component from Next.js (App Router) to plain React, or from plain React to Next.js. The two directions have different failure modes — check the matching section below rather than assuming the reverse of one rule is automatically correct for the other.
 
@@ -66,7 +57,7 @@ Next.js is a full-stack framework built on React that adds file-based routing, R
 
 3. **Replace the router's `<Link>`/`navigate`** with `next/link`'s `<Link>` and `next/navigation`'s hooks. Check that `to`/`params`/`search` props translate correctly to `href`.
 
-4. **Consider converting mutations to Server Actions** where it simplifies the flow (a `<form action={...}>` submitted directly to a `"use server"` function needs no separate API route) — but this is a judgment call, not mandatory; a TanStack Query `useMutation` calling a Next.js Route Handler is also valid, especially if the mutation needs the same optimistic-update patterns from `route-react-async-ui`.
+4. **Consider converting mutations to Server Actions** where it simplifies the flow (a `<form action={...}>` submitted directly to a `"use server"` function needs no separate API route) — but this is a judgment call, not mandatory; a TanStack Query `useMutation` calling a Next.js Route Handler is also valid, especially if the mutation needs the optimistic-update patterns from `apply-react-optimistic`.
 
 5. **Replace `<img>` with `next/image`** to get automatic optimization — pass `width`/`height` (or use `fill` with a sized parent) as it requires them, unlike a plain `<img>`.
 

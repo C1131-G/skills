@@ -1,22 +1,13 @@
 ---
 name: enforce-typescript-strict
-role: always
-description: >
-  MAIN always-on for TS. Modes: bare=audit report, :check=fix, :write=apply. unknown, no as/enum/!, inference, exhaustive unions, boundary validation.
-disable-model-invocation: true
+description: Enforce strict TypeScript with unknown at boundaries, no unsafe assertions or enums, strong inference, exhaustive unions, and runtime validation of external data.
 ---
 
 # enforce-typescript-strict
 
-**Main skill** (`role: always`). Modes:
+Use this skill directly whenever TypeScript is written or reviewed. Pair it with the domain skill for the code being changed.
 
-| Invoke | Mode |
-|---|---|
-| `enforce-typescript-strict` | audit - report only, no edits |
-| `enforce-typescript-strict:check` | audit + fix |
-| `enforce-typescript-strict:write` | implement / apply under this skill's rules |
-
-On write/check, ALWAYS (enforce-*) still applies when stack matches. Not a leaf - invoke by this name.
+Also apply `enforce-code-quality` to every file in scope, including the verification contract after code changes.
 
 Apply to all TypeScript written or reviewed.
 
@@ -54,4 +45,4 @@ Flag missing `strict` when reviewing `tsconfig`.
 
 ## Done when
 
-No banned escapes in scope (`:write` task scope or `:check` all TS source); unions are exhaustive; external data is schema-validated; new server-backed data reuses upstream types when possible. Under `skill-master`, process rules **1 → N** with a lint/typecheck/build gate between rules when auditing.
+No banned escapes in scope; unions are exhaustive; external data is schema-validated; new server-backed data reuses upstream types when possible. Process rules **1 → N** with a lint/typecheck/build gate between rules when making broad corrections.

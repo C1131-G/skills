@@ -1,13 +1,12 @@
 ---
 name: design-backend-architecture
-role: leaf
-parent: route-backend
-description: LEAF of route-backend — not a main skill. Feature modules, routes→controller→service→repository.
-disable-model-invocation: true
+description: Design backend feature modules and routes-to-controller-to-service-to-repository flow. Use for API structure, layering, middleware, and production service organization.
 ---
 # design-backend-architecture
 
-**Leaf — not main.** Parent: `route-backend`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for backend structure. Pair it with `apply-structured-logging`, `document-openapi`, and `test-backend` when those concerns are in scope.
+
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever designing or reviewing the folder structure and request flow of a backend/API service, regardless of framework (Express, Hono, Fastify, NestJS, etc.) or database layer.
 

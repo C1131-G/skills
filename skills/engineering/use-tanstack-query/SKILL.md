@@ -1,14 +1,13 @@
 ---
 name: use-tanstack-query
-role: leaf
-parent: route-tanstack
-description: LEAF of route-tanstack — not a main skill. TanStack Query keys, queryOptions, cache, mutations.
-disable-model-invocation: true
+description: Use TanStack Query for server state, query keys, queryOptions, caching, mutations, prefetching, rendering, and tests. Use when writing or reviewing React data fetching.
 ---
 
 # use-tanstack-query
 
-**Leaf — not main.** Parent: `route-tanstack`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for TanStack Query. Load only the disclosed reference files needed for the current task.
+
+Also apply `enforce-code-quality` and `enforce-typescript-strict` to files in scope.
 
 Apply when writing or reviewing server-state code. **Load disclosed files only for the branch you need.**
 
@@ -19,7 +18,7 @@ Apply when writing or reviewing server-state code. **Load disclosed files only f
 | select / transform, tracked queries, error/toast strategy | [render.md](render.md) |
 | Testing, placeholder vs initialData, Router+Query, WebSockets, forms, context | [advanced.md](advanced.md) |
 
-Optimistic UI path → also `route-react-async-ui` / `apply-react-optimistic`. Client UI state → `use-zustand`, not the query cache.
+Optimistic UI path → also `apply-react-optimistic` and `apply-react-transitions`. Client UI state → `use-zustand`, not the query cache.
 
 ## Non-negotiables (every change)
 

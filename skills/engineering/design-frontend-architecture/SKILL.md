@@ -1,21 +1,12 @@
 ---
 name: design-frontend-architecture
-role: main
-description: >
-  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Feature-based React folder structure.
-disable-model-invocation: true
+description: Design feature-based React frontend architecture. Use for folder structure, route wiring, feature boundaries, shared code, imports, and scalable module organization.
 ---
 # design-frontend-architecture
 
-**Main skill** (`role: main`). Modes:
+Use this skill directly for React project structure. Pair it with the router and state skills used by the project.
 
-| Invoke | Mode |
-|---|---|
-| `design-frontend-architecture` | audit — report only, no edits |
-| `design-frontend-architecture:check` | audit + fix |
-| `design-frontend-architecture:write` | implement / apply under this skill's rules |
-
-On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever setting up or reviewing a React frontend's folder structure, regardless of which router the project uses. Mirrors `design-backend-architecture`'s approach — folder structure first, then the rules that keep it clean.
 

@@ -1,14 +1,13 @@
 ---
 name: apply-react-suspense
-role: leaf
-parent: route-react-async-ui
-description: LEAF of route-react-async-ui — not a main skill. Suspense, Error Boundary, use, useDeferredValue.
-disable-model-invocation: true
+description: Apply React Suspense, Error Boundaries, use, and useDeferredValue. Use for async loading boundaries, streaming, stale-content retention, and recovery UI.
 ---
 
 # apply-react-suspense
 
-**Leaf — not main.** Parent: `route-react-async-ui`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for asynchronous render boundaries. Pair it with `use-tanstack-query` for cached server data and `apply-next-shell-nav` when placing boundaries in a Next.js application shell.
+
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 ## Fresh load vs updating
 

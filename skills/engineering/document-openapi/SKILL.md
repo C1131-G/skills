@@ -1,13 +1,12 @@
 ---
 name: document-openapi
-role: leaf
-parent: route-backend
-description: LEAF of route-backend — not a main skill. OpenAPI 3.1 from code, startup links.
-disable-model-invocation: true
+description: Document HTTP APIs with OpenAPI 3.1 generated from code. Use for schemas, operations, examples, error responses, API explorers, and startup documentation links.
 ---
 # document-openapi
 
-**Leaf — not main.** Parent: `route-backend`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for API documentation. Pair it with `design-backend-architecture` so documentation generation stays aligned with routes, validation, and handlers.
+
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever documenting an HTTP API, regardless of language or framework. "Swagger" here refers to the OpenAPI ecosystem in general (tooling like Swagger UI); the specification itself is called OpenAPI.
 

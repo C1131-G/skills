@@ -1,13 +1,12 @@
 ---
 name: test-backend
-role: leaf
-parent: route-backend
-description: LEAF of route-backend — not a main skill. Vitest pyramid, DB isolation, AAA.
-disable-model-invocation: true
+description: Test backend services with a Vitest-oriented test pyramid, database isolation, and Arrange-Act-Assert. Use for unit, integration, HTTP, and repository tests.
 ---
 # test-backend
 
-**Leaf — not main.** Parent: `route-backend`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for backend testing. Pair it with `design-backend-architecture` to choose seams and `document-openapi` for contract coverage.
+
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever writing or reviewing backend tests. Assumes Vitest as the test runner, per the project's stack.
 

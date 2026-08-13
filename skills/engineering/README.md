@@ -1,52 +1,41 @@
 # Engineering
 
-Daily code skills. Install via `npx skills@latest add C1131-G/skills`.
+Daily engineering skills. Install with `npx skills@latest add C1131-G/skills`.
 
-## Run
+Every skill is independently invokable. Name the skill and describe whether you want implementation, fixes, review, or explanation in ordinary language.
 
-| Invoke | Mode | Edits |
-|---|---|---|
-| `skill-master` or `<main>` | **audit** | No — report only |
-| `skill-master:check` or `<main>:check` | **check** | Yes — fix |
-| `skill-master:write` or `<main>:write` | **write** | Yes — implement |
+All engineering skills apply `enforce-code-quality`. After writing or changing app code, add or update relevant tests, run focused checks, then run the affected app's full available tests, type checking, linting, and production build. Fix in-scope failures and rerun until green; report unrelated or externally blocked failures exactly. Review-only requests remain read-only.
 
-**Only mains are invokable.** Leaves run only under their router.
+## React and frontend
 
-## Entry
+- [apply-react-transitions](./apply-react-transitions/SKILL.md)
+- [apply-react-optimistic](./apply-react-optimistic/SKILL.md)
+- [apply-react-suspense](./apply-react-suspense/SKILL.md)
+- [audit-react-effects](./audit-react-effects/SKILL.md)
+- [apply-toasts](./apply-toasts/SKILL.md)
+- [apply-native-feel-nav](./apply-native-feel-nav/SKILL.md)
+- [apply-next-shell-nav](./apply-next-shell-nav/SKILL.md)
+- [design-frontend-architecture](./design-frontend-architecture/SKILL.md)
+- [convert-nextjs-react](./convert-nextjs-react/SKILL.md)
+- [use-zustand](./use-zustand/SKILL.md)
 
-- **[skill-master](./skill-master/SKILL.md)** — always first  
-  - bare → full-stack **audit report**  
-  - `:check` → fix project to skills  
-  - `:write` → implement; NEED = message + change (mains only)
+## TanStack
 
-## Routers (main — invoke the router, not leaves)
+- [use-tanstack-query](./use-tanstack-query/SKILL.md)
+- [use-tanstack-router](./use-tanstack-router/SKILL.md)
+- [use-tanstack-form](./use-tanstack-form/SKILL.md)
+- [use-tanstack-table](./use-tanstack-table/SKILL.md)
 
-| Router | Leaves (internal) |
-|---|---|
-| **[route-react-async-ui](./route-react-async-ui/SKILL.md)** | apply-react-transitions, apply-react-optimistic, apply-react-suspense |
-| **[route-tanstack](./route-tanstack/SKILL.md)** | use-tanstack-query, use-tanstack-router, use-tanstack-form, use-tanstack-table |
-| **[route-backend](./route-backend/SKILL.md)** | design-backend-architecture, apply-structured-logging, document-openapi, test-backend |
+## Backend
 
-Example: `route-react-async-ui:write` — **not** `apply-react-suspense:write` as a top-level run.
+- [design-backend-architecture](./design-backend-architecture/SKILL.md)
+- [apply-structured-logging](./apply-structured-logging/SKILL.md)
+- [document-openapi](./document-openapi/SKILL.md)
+- [test-backend](./test-backend/SKILL.md)
 
-## Always-on (main)
+## Cross-cutting
 
-- **[enforce-code-quality](./enforce-code-quality/SKILL.md)**
-- **[enforce-typescript-strict](./enforce-typescript-strict/SKILL.md)**
+- [enforce-code-quality](./enforce-code-quality/SKILL.md)
+- [enforce-typescript-strict](./enforce-typescript-strict/SKILL.md)
 
-## Other mains
-
-- **[design-frontend-architecture](./design-frontend-architecture/SKILL.md)**
-- **[audit-react-effects](./audit-react-effects/SKILL.md)**
-- **[apply-toasts](./apply-toasts/SKILL.md)**
-- **[apply-native-feel-nav](./apply-native-feel-nav/SKILL.md)**
-- **[apply-next-shell-nav](./apply-next-shell-nav/SKILL.md)**
-- **[use-zustand](./use-zustand/SKILL.md)**
-- **[use-nub-vite](./use-nub-vite/SKILL.md)**
-- **[convert-nextjs-react](./convert-nextjs-react/SKILL.md)**
-
-## Leaves (not invokable as main)
-
-Listed only under routers above. Frontmatter: `role: leaf` + `parent: route-…`.
-
-See root [README](../../README.md) for full index and interconnect map.
+See the root [README](../../README.md) for the interconnection map.

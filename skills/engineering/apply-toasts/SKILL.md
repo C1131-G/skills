@@ -1,21 +1,12 @@
 ---
 name: apply-toasts
-role: main
-description: >
-  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Sonner toasts — when, a11y, motion.
-disable-model-invocation: true
+description: Apply accessible React toast notifications with Sonner, including when to toast, error strategy, actions, timing, and reduced motion.
 ---
 # apply-toasts
 
-**Main skill** (`role: main`). Modes:
+Use this skill directly for toast and notification UI. Pair it with `apply-react-optimistic` when a mutation may roll back and needs a clear user-facing error.
 
-| Invoke | Mode |
-|---|---|
-| `apply-toasts` | audit — report only, no edits |
-| `apply-toasts:check` | audit + fix |
-| `apply-toasts:write` | implement / apply under this skill's rules |
-
-On write/check, skill-master ALWAYS still applies when stack matches. Not a leaf — invoke by this name.
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever adding or reviewing toast/notification UI in a React project.
 
@@ -136,7 +127,7 @@ Sonner already uses the **Motion** library (formerly Framer Motion) internally f
 - **Motion should be interruptible, not restart from scratch.** If a new toast arrives while another is still animating out (or the stack is re-flowing), the animation should continue smoothly from its current position/velocity, not snap back to a fixed start state and replay. This is what a spring naturally gives you (it can retarget mid-flight); a fixed-duration keyframe animation can't do this cleanly — another reason to prefer springs here.
 - **Restraint over spectacle.** Apple's own motion language (see the design principles behind iOS toast/alert UI) favors subtle, quick, purposeful movement — a small scale/opacity/position shift, not a bounce, spin, or elaborate multi-stage entrance. A toast that overshoots wildly or takes over half a second to settle reads as gimmicky, not premium; keep total settle time in the 200-400ms range.
 - **Depth via translucency, not heavy shadows alone.** A subtle `backdrop-filter: blur(...)` with a semi-transparent background (a "glass" material) paired with a soft, low-opacity shadow reads as more refined than a flat, opaque box with a hard drop shadow. Keep blur/opacity subtle enough that text inside the toast stays fully legible against any background.
-- **Respect `prefers-reduced-motion` here too** (same principle as `route-react-async-ui`'s View Transitions rule) — fall back to a simple, fast opacity-only fade with no spring/scale/position movement when the user has that preference set:
+- **Respect `prefers-reduced-motion` here too** (same principle as `apply-native-feel-nav`) — fall back to a simple, fast opacity-only fade with no spring/scale/position movement when the user has that preference set:
 
   ```tsx
   const prefersReducedMotion = useReducedMotion(); // Motion's built-in hook

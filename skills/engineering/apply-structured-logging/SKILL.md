@@ -1,13 +1,12 @@
 ---
 name: apply-structured-logging
-role: leaf
-parent: route-backend
-description: LEAF of route-backend — not a main skill. Pino structured logs, levels, request context.
-disable-model-invocation: true
+description: Apply structured backend logging with Pino-style events, levels, request context, and request IDs. Use when adding, reviewing, or debugging server logs.
 ---
 # apply-structured-logging
 
-**Leaf — not main.** Parent: `route-backend`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for backend logging. Pair it with `design-backend-architecture` to place request context and logging at the correct application seams.
+
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever writing or reviewing logging code in a backend/server project (Node.js, Hono, etc.).
 

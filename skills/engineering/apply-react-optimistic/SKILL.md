@@ -1,14 +1,13 @@
 ---
 name: apply-react-optimistic
-role: leaf
-parent: route-react-async-ui
-description: LEAF of route-react-async-ui — not a main skill. useOptimistic vs Query onMutate.
-disable-model-invocation: true
+description: Apply optimistic React UI with useOptimistic or TanStack Query onMutate. Use for instant mutation feedback, rollback, cache updates, and server reconciliation.
 ---
 
 # apply-react-optimistic
 
-**Leaf — not main.** Parent: `route-react-async-ui`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for optimistic mutation behavior. Pair it with `apply-react-transitions` for pending interaction state, `use-tanstack-query` when the optimistic value lives in a shared server-state cache, and `apply-toasts` when rollback or failure needs a user-facing notification.
+
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 | | `useOptimistic` | Query `onMutate` |
 |---|---|---|

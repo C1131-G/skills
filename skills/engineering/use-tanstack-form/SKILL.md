@@ -1,13 +1,12 @@
 ---
 name: use-tanstack-form
-role: leaf
-parent: route-tanstack
-description: LEAF of route-tanstack — not a main skill. TanStack Form Standard Schema, triggers, canSubmit.
-disable-model-invocation: true
+description: Use TanStack Form with Standard Schema validation, validation triggers, field state, and canSubmit. Use when building or reviewing type-safe React forms.
 ---
 # use-tanstack-form
 
-**Leaf — not main.** Parent: `route-tanstack`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for TanStack Form. Pair it with `use-tanstack-query` when submission mutates server state and `apply-react-transitions` for pending actions.
+
+Also apply `enforce-code-quality` and `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever building or reviewing a form using `@tanstack/react-form`.
 

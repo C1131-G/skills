@@ -93,7 +93,7 @@ useMutation({
 });
 ```
 
-For the optimistic-update side of a mutation (`onMutate`/`onError`/rollback), see `route-react-async-ui` — that file covers the full instant-feedback flow.
+For the optimistic-update side of a mutation (`onMutate`/`onError`/rollback), use `apply-react-optimistic`; add `apply-react-transitions` when the interaction also needs pending state or duplicate-submit protection.
 
 ## 5. When a variable key produces a brand-new cache entry, pre-fill it from a broader cached query if you can
 
@@ -111,7 +111,7 @@ useQuery({
 });
 ```
 
-This is a different tool from `placeholderData: keepPreviousData` (rule 3 of `route-react-async-ui`'s Suspense guidance) — that keeps the *previous* variant's data visible during a transition; this pre-fills a *new* variant's cache entry with a locally-derivable subset the moment it's created, before any network request completes.
+This is a different tool from `placeholderData: keepPreviousData` in `apply-react-suspense` — that keeps the *previous* variant's data visible during a transition; this pre-fills a *new* variant's cache entry with a locally-derivable subset the moment it's created, before any network request completes.
 
 ## 6. Set `staleTime` deliberately; understand `gcTime` is not the same thing
 
@@ -228,5 +228,5 @@ function SettingsForm({ initialData }: { initialData: Settings }) {
 
 ## 15. Don't use the query cache as a general local-state manager
 
-`queryClient.setQueryData`/`setQueriesData` exist for two purposes: optimistic updates (rule covered in `route-react-async-ui`), and writing back data a mutation's response already returned (rule 4). Using them as a general-purpose way to stash arbitrary client state in the cache invites a background refetch to silently overwrite whatever was manually written, since the cache doesn't know that value wasn't "real" server data. For actual client/UI state, use local component state or a dedicated client-state store (see `use-zustand`) — keep server state and client state in the tools built for each, not blended into one cache.
+`queryClient.setQueryData`/`setQueriesData` exist for two purposes: optimistic updates (covered by `apply-react-optimistic`), and writing back data a mutation's response already returned (rule 4). Using them as a general-purpose way to stash arbitrary client state in the cache invites a background refetch to silently overwrite whatever was manually written, since the cache doesn't know that value wasn't "real" server data. For actual client/UI state, use local component state or a dedicated client-state store (see `use-zustand`) — keep server state and client state in the tools built for each, not blended into one cache.
 

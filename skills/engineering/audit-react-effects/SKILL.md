@@ -1,22 +1,13 @@
 ---
 name: audit-react-effects
-role: main
-description: >
-  MAIN. Modes: bare=audit report, :check=fix, :write=apply. useEffect external sync only; eliminate the rest.
-disable-model-invocation: true
+description: Audit and refactor React useEffect usage so effects synchronize only with external systems. Use for derived state, event logic, data fetching, subscriptions, and effect dependency problems.
 ---
 
 # audit-react-effects
 
-**Main skill** (`role: main`). Modes:
+Use this skill directly whenever React effects are being written, reviewed, or removed. Pair it with the relevant data, router, or state skill when another system should own the behavior.
 
-| Invoke | Mode |
-|---|---|
-| `audit-react-effects` | audit - report only, no edits |
-| `audit-react-effects:check` | audit + fix |
-| `audit-react-effects:write` | implement / apply under this skill's rules |
-
-On write/check, ALWAYS (enforce-*) still applies when stack matches. Not a leaf - invoke by this name.
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 > Before another `useEffect`: **is this syncing with an external system?** If not, use a better pattern.
 

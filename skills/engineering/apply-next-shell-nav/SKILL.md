@@ -1,26 +1,17 @@
 ---
 name: apply-next-shell-nav
-role: main
-description: >
-  MAIN. Modes: bare=audit report, :check=fix, :write=implement. Next App Shell + nested sidebar, first paint, private session chrome.
-disable-model-invocation: true
+description: Apply a persistent Next.js App Router shell with nested sidebars, correct deep-link first paint, private session chrome, and stable soft navigation.
 ---
 
 # apply-next-shell-nav
 
-**Main skill** (`role: main`). Modes:
+Use this skill directly for Next.js application shells. Pair it with `apply-react-suspense` for boundary placement and `apply-native-feel-nav` for visual navigation motion.
 
-| Invoke | Mode |
-|---|---|
-| `apply-next-shell-nav` | audit - report only, no edits |
-| `apply-next-shell-nav:check` | audit + fix |
-| `apply-next-shell-nav:write` | implement / apply under this skill's rules |
-
-On write/check, ALWAYS (enforce-*) still applies when stack matches. Not a leaf - invoke by this name.
+Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Patterns for **Next.js App Router dashboards** (Cache Components era): a persistent shell, nested product sidebar, correct deep-link first paint, and soft nav that does not skeleton the chrome.
 
-Stack gate: **Next.js** in `package.json`. Prefer with `cacheComponents` / Partial Prefetching when available (Next 16+). Pair main `route-react-async-ui` (leaf suspense) for boundary shape; pair main `apply-native-feel-nav` only for visual motion — this skill owns **structure and data placement**, not transitions.
+Stack gate: **Next.js** in `package.json`. Prefer with `cacheComponents` / Partial Prefetching when available (Next 16+). Pair `apply-react-suspense` for boundary shape; pair `apply-native-feel-nav` only for visual motion — this skill owns **structure and data placement**, not transitions.
 
 Canonical demo: [aurorascharff/sidebar-subnav-demo](https://github.com/aurorascharff/sidebar-subnav-demo).
 
@@ -153,7 +144,7 @@ Main content: page shell sync, rows async (rule 3).
 | Optimistic pane switch fighting the URL | URL is source of truth; local state only for open animation |
 | `prefetch={true}` “for session data” | Private cache + default link prefetch |
 
-## Reviewing existing code (`:check`)
+## Reviewing existing code
 
 1. Is the sidebar only in a parent layout?  
 2. Is nested open state lost on soft nav?  

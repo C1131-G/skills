@@ -1,13 +1,12 @@
 ---
 name: use-tanstack-router
-role: leaf
-parent: route-tanstack
-description: LEAF of route-tanstack — not a main skill. File routes, loaders + Query, typed search.
-disable-model-invocation: true
+description: Use TanStack Router with file routes, loaders, TanStack Query integration, typed params and search, links, and prefetching. Use when building or reviewing React routing.
 ---
 # use-tanstack-router
 
-**Leaf — not main.** Parent: `route-tanstack`. If invoked alone, load parent with the same mode and Decision-select this leaf only. Do not report this name as a top-level run.
+Use this skill directly for TanStack Router. Pair it with `use-tanstack-query` for server-state loaders and `audit-react-effects` to eliminate effect-driven route fetching.
+
+Also apply `enforce-code-quality` and `enforce-typescript-strict` to files in scope.
 
 Apply these rules whenever building or reviewing routing in a project that uses TanStack Router, paired with TanStack Query for server state. Assumes the `routes/` and `features/` folder split from `design-frontend-architecture`.
 
