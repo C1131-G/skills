@@ -1,6 +1,6 @@
 ---
 name: audit-react-effects
-description: Audit and refactor React useEffect usage so effects synchronize only with external systems. Use for derived state, event logic, data fetching, subscriptions, and effect dependency problems.
+description: Audit and refactor React useEffect usage so effects synchronize only with external systems. Use for derived state, event logic, data fetching, subscriptions, and effect dependency problems. Triggers on any useEffect you are about to write or edit, infinite re-render loops, state that resets or lags one render behind, a value computed in an effect that could be computed during render, and fetching inside useEffect.
 ---
 
 # audit-react-effects

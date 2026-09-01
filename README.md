@@ -1,142 +1,130 @@
 # Cibi Skills
 
-Personal agent skills from **my own knowledge and daily work** — focused, composable patterns I use when building and reviewing software.
+Personal engineering knowledge from **my own work and daily practice**, in two forms:
+
+- **Lint rules** (`src/`) — the parts a machine can check, as an Oxlint plugin you vendor into your repo. They run in CI for every agent and every human, whether or not anyone read the docs.
+- **Skills** (`skills/`) — the parts that need judgment, as agent skills for Claude Code, Cursor, Codex, Copilot, and others.
+
+The split is the point. Prose only helps if something chooses to read it; a lint rule fails the build regardless.
 
 ## Disclaimer
 
 > **This is personal knowledge and practice — not official documentation, a product, or professional advice.**
 
-- Treat every skill as opinionated guidance, not absolute truth.
-- Verify recommendations against current library documentation, team standards, and project constraints.
-- You own the result produced with these skills.
+- Treat every rule and skill as opinionated guidance, not absolute truth.
+- Verify against current library documentation, team standards, and project constraints.
+- You own the result produced with these.
 
 If something is wrong, unclear, or outdated, open a [GitHub Issue](https://github.com/C1131-G/skills/issues) or PR.
 
-## Install
+---
 
-Requires [Node.js](https://nodejs.org/).
+## The lint rules
 
-### Install all skills
+Executable versions of the mechanically-checkable rules from `use-tanstack-query`. No other linter catches these.
 
-[![Install all skills](https://skills.sh/b/C1131-G/skills)](https://skills.sh/C1131-G/skills)
+| Rule | Enforces |
+|---|---|
+| `cibi/no-conditional-query` | Query and mutation hooks are called unconditionally; the fetch is gated with `enabled` |
+| `cibi/no-floating-invalidate` | `invalidateQueries` and friends are awaited or returned inside mutation callbacks |
+| `cibi/no-query-result-rest` | No rest destructuring of a query result, which defeats tracked-query re-renders |
 
-Click the badge to open the package on skills.sh, or run one command to install every skill for all detected agents without prompts:
+**Meant to be vendored, not depended on.** Copy the rules into your repository, read them, and change what does not fit your team. They are a starting point, not a standard.
+
+### Install
+
+Ask an agent with the `install-cibi-rules` skill, or do it by hand:
+
+```bash
+node skills/engineering/install-cibi-rules/scripts/install.mjs
+```
+
+That copies the plugin to `tools/oxlint/cibi/`. Then register it in `oxlint.config.ts`:
+
+```ts
+jsPlugins: [{ name: "cibi", specifier: "./tools/oxlint/cibi/index.ts" }],
+rules: {
+  "cibi/no-conditional-query": "error",
+  "cibi/no-floating-invalidate": "error",
+  "cibi/no-query-result-rest": "error",
+},
+```
+
+Install `oxlint` and `@oxlint/plugins` at the **same pinned version** — the skill walks through reading the right one rather than guessing.
+
+### Develop
+
+```bash
+npm install
+npm run check     # lint + rule tests + typecheck + asset drift
+```
+
+One rule per file in `src/rules/`, its test beside it. After changing `src/`, run `npm run sync:skill-assets` so the installer ships the current code.
+
+---
+
+## The skills
 
 ```bash
 npx skills@latest add C1131-G/skills --all
 ```
 
-### Choose skills or agents
-
-Use the interactive installer or select the skills and agents yourself:
+Installs to every detected agent — Claude Code, Cursor, Codex, Cline, Copilot, Gemini CLI, Windsurf, Zed, and others. Or choose interactively:
 
 ```bash
 npx skills@latest add C1131-G/skills
-npx skills@latest add C1131-G/skills --skill '*' -a claude-code -a cursor -a grok -y
-npx skills@latest add C1131-G/skills --skill '*' -g -y
 npx skills@latest add C1131-G/skills --list
 npx skills update
 ```
 
-## Invocation model
-
-Every skill is independently invokable. There is no master skill, router, leaf role, or suffix-based audit/check/write protocol.
-
-Invoke the exact skill whose expertise you need and state the action in normal language:
-
-```text
-Use apply-react-suspense to review the loading boundaries.
-Use use-tanstack-query to fix the mutation cache behavior.
-Use design-backend-architecture and test-backend to implement this endpoint with tests.
-```
-
-Skills remain interconnected through explicit related-skill guidance. Use multiple named skills when a task crosses boundaries; no hidden orchestrator expands the request.
-
-### Verification after code changes
-
-Every engineering skill links to `enforce-code-quality`. When a skill writes or changes application code, it must:
-
-1. Add or update relevant tests when the project has test infrastructure.
-2. Run focused tests during implementation.
-3. Run the affected app's full available tests, type checking, linting, and production build before finishing.
-4. Diagnose and fix failures caused by or within the requested change, then rerun until green.
-5. Report unrelated pre-existing failures or unavailable external dependencies precisely instead of claiming success.
-
-Review-only requests remain read-only.
-
-### What is testable
-
-| Skill group | Expected verification after writing code |
-|---|---|
-| React async/state: `apply-react-*`, `audit-react-effects`, `use-zustand` | Unit or component tests for state transitions, pending states, rollback, errors, and regression behavior |
-| TanStack: `use-tanstack-*` | Unit/component tests plus loader, cache, form, table, or route integration tests as applicable |
-| Backend: `design-backend-architecture`, `apply-structured-logging`, `document-openapi`, `test-backend` | Service unit tests, HTTP/repository integration tests, captured-log assertions, contract tests, and OpenAPI validation as applicable |
-| App structure and conversion: `apply-next-shell-nav`, `design-frontend-architecture`, `convert-nextjs-react` | Route/integration tests for changed behavior plus typecheck, lint, and production build |
-| Visual interaction: `apply-native-feel-nav`, `apply-toasts` | Automated component/E2E checks where practical, plus manual reduced-motion, accessibility, gesture, and real-device/browser verification |
-| Cross-cutting: `enforce-code-quality`, `enforce-typescript-strict` | Run the existing suite, typecheck, lint, and build; add a regression test whenever behavior changes |
-| Productivity: `read-research-paper` | No application tests; verify citations, notes, and conclusions against the paper |
-
-Documentation-only or review-only changes do not require invented application tests. Run the checks that can actually validate the changed artifact.
-
-## Interconnections
-
-| Concern | Primary skill | Common companions |
-|---|---|---|
-| Async React actions | `apply-react-transitions` | `apply-react-optimistic`, `apply-react-suspense` |
-| Optimistic server mutations | `apply-react-optimistic` | `use-tanstack-query`, `apply-toasts` |
-| Async render boundaries | `apply-react-suspense` | `use-tanstack-query`, `apply-next-shell-nav` |
-| TanStack server state | `use-tanstack-query` | `use-tanstack-router`, `use-tanstack-form`, `use-zustand` |
-| TanStack routing | `use-tanstack-router` | `use-tanstack-query`, `audit-react-effects` |
-| TanStack forms | `use-tanstack-form` | `use-tanstack-query`, `apply-react-transitions` |
-| Server-driven tables | `use-tanstack-table` | `use-tanstack-query` |
-| Backend structure | `design-backend-architecture` | `apply-structured-logging`, `document-openapi`, `test-backend` |
-| Frontend structure | `design-frontend-architecture` | router and state skills used by the project |
-| Navigation structure and motion | `apply-next-shell-nav` | `apply-native-feel-nav`, `apply-react-suspense` |
-| Cross-cutting code rules | `enforce-code-quality` | `enforce-typescript-strict` for TypeScript |
-
-## Skill index
-
 ### React and frontend
 
-- `apply-react-transitions` — pending actions and non-blocking updates
-- `apply-react-optimistic` — instant mutation feedback and rollback
-- `apply-react-suspense` — async boundaries and stale-content retention
-- `audit-react-effects` — external synchronization only
-- `apply-toasts` — accessible notifications
-- `apply-native-feel-nav` — navigation motion and gestures
-- `apply-next-shell-nav` — persistent Next.js application shells
-- `design-frontend-architecture` — feature-based React structure
-- `convert-nextjs-react` — Next.js and plain React conversion
-- `use-zustand` — client-only state
+| Skill | Covers |
+|---|---|
+| [apply-react-async-ui](skills/engineering/apply-react-async-ui/SKILL.md) | Pending state, optimistic updates, loading boundaries |
+| [audit-react-effects](skills/engineering/audit-react-effects/SKILL.md) | Eliminating unnecessary `useEffect` |
+| [apply-toasts](skills/engineering/apply-toasts/SKILL.md) | Sonner; toast vs inline vs modal; accessibility |
+| [apply-native-feel-nav](skills/engineering/apply-native-feel-nav/SKILL.md) | Navigation motion and mobile ergonomics |
+| [apply-next-shell-nav](skills/engineering/apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure |
 
 ### TanStack
 
-- `use-tanstack-query` — server state and mutations
-- `use-tanstack-router` — typed file routing and loaders
-- `use-tanstack-form` — type-safe forms and validation
-- `use-tanstack-table` — headless typed tables
+| Skill | Covers |
+|---|---|
+| [use-tanstack-query](skills/engineering/use-tanstack-query/SKILL.md) | Server state, keys, caching, mutations, SSR |
+| [use-tanstack-router](skills/engineering/use-tanstack-router/SKILL.md) | File routes, search params, links, loaders |
 
-### Backend
+### Cross-cutting
 
-- `design-backend-architecture` — feature modules and request flow
-- `apply-structured-logging` — structured events and request context
-- `document-openapi` — OpenAPI 3.1 from code
-- `test-backend` — backend test pyramid and isolation
+| Skill | Covers |
+|---|---|
+| [enforce-code-quality](skills/engineering/enforce-code-quality/SKILL.md) | Minimal diffs, size limits, naming, verification, commit hygiene |
+| [enforce-typescript-strict](skills/engineering/enforce-typescript-strict/SKILL.md) | Strictness rules and compiler flags |
+| [install-cibi-rules](skills/engineering/install-cibi-rules/SKILL.md) | Vendoring the lint rules above into a project |
 
-### Cross-cutting and productivity
+### Other
 
-- `enforce-code-quality` — maintainable, proportional code changes
-- `enforce-typescript-strict` — strict TypeScript and boundary validation
-- `read-research-paper` — three-pass paper reading
+[read-research-paper](skills/productivity/read-research-paper/SKILL.md) — a three-pass method for reading papers.
 
-## Layout
+## Invocation
+
+Every skill is independently invokable. Name the one you need and say what you want in ordinary language:
 
 ```text
-skills/
-  engineering/
-    <independently invokable skill>/
-      SKILL.md
-  productivity/
-    <independently invokable skill>/
-      SKILL.md
+Use apply-react-async-ui to review the loading boundaries.
+Use use-tanstack-query to fix the mutation cache behavior.
 ```
+
+Larger skills are a thin `SKILL.md` router over disclosed reference files, so only the relevant branch gets loaded.
+
+## Making them apply automatically
+
+Skill loading is probabilistic — an agent reads the description and decides. To make knowledge apply every time, in this order:
+
+1. **Lint rules** — the only mechanism that is tool-agnostic and applies to humans too.
+2. **`AGENTS.md`** in your project, listing the skills that always apply. Read by most agents; Claude Code reads `CLAUDE.md`, so point one at the other rather than maintaining two.
+3. **Hooks**, if you use Claude Code — a `PreToolUse` hook on `Write|Edit` can inject a skill pointer on every edit. Claude Code only.
+
+## License
+
+MIT

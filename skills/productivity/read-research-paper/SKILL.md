@@ -1,6 +1,6 @@
 ---
 name: read-research-paper
-description: Read and analyze research papers with a three-pass method. Use for triage, comprehension, deep review, structured notes, critique, and deciding how much reading depth a paper deserves.
+description: Read and analyze research papers with a three-pass method. Use for triage, comprehension, deep review, structured notes, critique, and deciding how much reading depth a paper deserves. Triggers on "read this paper", an arXiv or DOI link, a PDF of academic work, "is this paper any good", and summarizing a study's method or claims.
 ---
 # read-research-paper
 
@@ -74,3 +74,6 @@ A survey means reading tens of papers, often in an area you don't know well yet.
 - **When asked to do a literature survey/review of a field**: follow the four-step survey process above rather than trying to deeply read every paper found — the method is designed specifically to avoid that.
 - **When summarizing back to the user**: structure the summary around whichever pass was actually done — a pass-1 summary should hit the five Cs; a pass-2 summary should cover the main argument plus supporting evidence; a pass-3 summary should include identified weaknesses/assumptions, not just a restatement of the paper's claims.
 
+## Done when
+
+The depth of reading matches what was actually asked; the summary is structured around the pass that was performed; and for a survey, the citation loop ran until nothing new kept surfacing.

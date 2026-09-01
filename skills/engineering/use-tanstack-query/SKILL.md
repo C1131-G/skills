@@ -1,6 +1,6 @@
 ---
 name: use-tanstack-query
-description: Use TanStack Query for server state, query keys, queryOptions, caching, mutations, prefetching, rendering, and tests. Use when writing or reviewing React data fetching.
+description: Use TanStack Query for server state, query keys, queryOptions, caching, mutations, prefetching, rendering, tests, and Next.js App Router hydration. Use on any file importing useQuery, useMutation, useSuspenseQuery, or queryClient. Triggers on "the list doesn't update after saving", a field that goes blank or stale after a submit or refetch, duplicate requests, a loading spinner on every navigation, and cache invalidation questions.
 ---
 
 # use-tanstack-query
@@ -17,8 +17,9 @@ Apply when writing or reviewing server-state code. **Load disclosed files only f
 | mutate vs mutateAsync, MutationCache, concurrent optimistic, data-before-error | [mutations.md](mutations.md) |
 | select / transform, tracked queries, error/toast strategy | [render.md](render.md) |
 | Testing, placeholder vs initialData, Router+Query, WebSockets, forms, context | [advanced.md](advanced.md) |
+| Next.js App Router: providers, HydrationBoundary, `use cache` / `cacheTag`, `updateTag` | [nextjs.md](nextjs.md) |
 
-Optimistic UI path → also `apply-react-optimistic` and `apply-react-transitions`. Client UI state → `use-zustand`, not the query cache.
+Optimistic UI, pending state, and loading boundaries → `apply-react-async-ui`. Client UI state → a dedicated client-state store, not the query cache.
 
 ## Non-negotiables (every change)
 
@@ -35,8 +36,9 @@ Optimistic UI path → also `apply-react-optimistic` and `apply-react-transition
 11. Mutations: prefer **`mutate`**; always-run logic on `useMutation` callbacks; UI-only on call-site callbacks.
 12. Optimistic: `cancelQueries` in `onMutate`; last mutator invalidates via `isMutating === 1`.
 13. Render: if `data` exists, show it before treating background `isError` as fatal.
-14. Router: loader primes cache; component reads via `useSuspenseQuery` / `useQuery` — not loader data alone.
+14. Router: place `queryOptions` in Route `context` (with `loaderDeps` for search params) so loader (`ensureQueryData`) and component (`useSuspenseQuery` via `useRouteContext`) share a single source of truth and never diverge.
 15. Devtools **dev only**.
+16. **Next.js App Router**: skip the library entirely for read-once data (`use()` on a server promise); one `QueryClient` per server render + a browser singleton; server prefetch and client hook share **one exported cache contract** (query key + `cacheTag`).
 
 ## Done when
 

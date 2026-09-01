@@ -3,3 +3,10 @@ Thumbs.db
 *.log
 node_modules/
 .scratch/
+
+# Installed third-party agent skills (see skills-lock.json)
+.agents/
+.claude/
+.codex/
+.commandcode/
+skills-lock.json

@@ -93,7 +93,7 @@ useMutation({
 });
 ```
 
-For the optimistic-update side of a mutation (`onMutate`/`onError`/rollback), use `apply-react-optimistic`; add `apply-react-transitions` when the interaction also needs pending state or duplicate-submit protection.
+For the optimistic-update side of a mutation (`onMutate`/`onError`/rollback), use `apply-react-async-ui`, which also covers the pending state and duplicate-submit protection the interaction needs.
 
 ## 5. When a variable key produces a brand-new cache entry, pre-fill it from a broader cached query if you can
 
@@ -111,7 +111,7 @@ useQuery({
 });
 ```
 
-This is a different tool from `placeholderData: keepPreviousData` in `apply-react-suspense` — that keeps the *previous* variant's data visible during a transition; this pre-fills a *new* variant's cache entry with a locally-derivable subset the moment it's created, before any network request completes.
+This is a different tool from `placeholderData: keepPreviousData` in `apply-react-async-ui` — that keeps the *previous* variant's data visible during a transition; this pre-fills a *new* variant's cache entry with a locally-derivable subset the moment it's created, before any network request completes.
 
 ## 6. Set `staleTime` deliberately; understand `gcTime` is not the same thing
 
@@ -191,6 +191,8 @@ Prefer router-level prefetching over ad hoc prefetch calls scattered through com
 - Since `staleTime` defaults to `0`, hydrated data is instantly considered stale and will trigger a background refetch immediately on the client after hydration. Set an explicit `staleTime` for anything you prefetch server-side if you don't want that double-fetch.
 - If using `useSuspenseQuery` on the client, every one of those queries **must** be prefetched on the server. A `useSuspenseQuery` that wasn't prefetched can cause a markup hydration mismatch (server and client rendering different things), not just a slower load.
 
+For the Next.js App Router specifics (provider placement, `HydrationBoundary`, dehydrating pending queries, `use cache`/`cacheTag`/`updateTag` coordination), see [nextjs.md](nextjs.md).
+
 ## 12. Configure retry/backoff deliberately, don't leave it fully default everywhere
 
 The default retry behavior (3 retries with exponential backoff) is reasonable for transient network errors, but isn't right for every case — a 404 or a validation error (4xx) shouldn't be retried at all, since retrying won't change the outcome. Use the `retry` function form to skip retries for non-transient errors:
@@ -228,5 +230,5 @@ function SettingsForm({ initialData }: { initialData: Settings }) {
 
 ## 15. Don't use the query cache as a general local-state manager
 
-`queryClient.setQueryData`/`setQueriesData` exist for two purposes: optimistic updates (covered by `apply-react-optimistic`), and writing back data a mutation's response already returned (rule 4). Using them as a general-purpose way to stash arbitrary client state in the cache invites a background refetch to silently overwrite whatever was manually written, since the cache doesn't know that value wasn't "real" server data. For actual client/UI state, use local component state or a dedicated client-state store (see `use-zustand`) — keep server state and client state in the tools built for each, not blended into one cache.
+`queryClient.setQueryData`/`setQueriesData` exist for two purposes: optimistic updates (covered by `apply-react-async-ui`), and writing back data a mutation's response already returned (rule 4). Using them as a general-purpose way to stash arbitrary client state in the cache invites a background refetch to silently overwrite whatever was manually written, since the cache doesn't know that value wasn't "real" server data. For actual client/UI state, use local component state or a dedicated client-state store — keep server state and client state in the tools built for each, not blended into one cache.
 

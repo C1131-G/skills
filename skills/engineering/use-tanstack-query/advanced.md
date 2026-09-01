@@ -25,19 +25,11 @@ Both pre-fill a query so the component starts in `success` state rather than `pe
 
 Use `initialData` when pre-filling from another query's existing cache entry (e.g. a detail view seeded from a list). Use `placeholderData` (typically `keepPreviousData`) for everything else — especially pagination and filter transitions where you want to keep showing the current page while the next one loads. Pre-filling with `initialData` also needs `initialDataUpdatedAt` set (use `queryClient.getQueryState(...).dataUpdatedAt`) so React Query knows when that data was last fetched and can trigger a background refetch correctly.
 
-## 25. TanStack Router + Query: treat the loader as a fire-and-forget cache primer, always read data via `useQuery`/`useSuspenseQuery`
+## 25. TanStack Router + Query: build `queryOptions` once, in route context
 
-When combining TanStack Router with TanStack Query, the loader's job is to start the fetch early — nothing more. Never read from `Route.useLoaderData()` for data that's also in the Query cache: without a `useQuery` or `useSuspenseQuery` call, React Query sees no observer for that query, which means:
-- No automatic background refetches (`refetchOnWindowFocus`, `refetchOnReconnect`)
-- `invalidateQueries` won't refetch it (no active observer)
-- The query is eligible for garbage collection even while "in use"
+When a route loads server data, the loader's job is to start the fetch early (`ensureQueryData`) and the component's job is to subscribe to the cache (`useSuspenseQuery`). Never read that data from `Route.useLoaderData()` — without an observer, background refetching and invalidation silently stop working.
 
-The integration between the two works best with this pattern:
-1. **Loader**: fire `queryClient.prefetchQuery(options)` or `ensureQueryData(options)` — both start the fetch, the difference is whether you await it (blocking navigation) or not (deferred, showing a loading state)
-2. **Component**: read the data with `useSuspenseQuery(options)` (using the same `queryOptions` factory) — this creates the observer and integrates with the router's Suspense/Error boundaries
-3. **Router setup**: set `defaultPreloadStaleTime: 0` and `defaultPendingComponent`/`defaultErrorComponent` globally — this turns off the router's own cache (let Query own it) and wires up boundaries once rather than per-route
-
-The `await`-or-not decision in the loader determines blocking vs. deferred loading, but it doesn't have to live in the loader when using Query — it can be deferred to the component by using `useSuspenseQuery` (blocking, reads from cache or waits for the in-flight promise) vs. `useQuery` (non-blocking, renders immediately while data loads).
+The whole pattern — `loaderDeps`, `queryOptions` in route `context`, why divergence between loader and component causes a silent waterfall, and `defaultPreloadStaleTime: 0` — is written up once in **`use-tanstack-router`** → [query-integration.md](../use-tanstack-router/query-integration.md). Follow it there rather than reimplementing it here.
 
 ## 26. `select` with an expensive transformation: stabilize the reference and externally memoize
 

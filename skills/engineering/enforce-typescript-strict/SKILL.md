@@ -1,6 +1,6 @@
 ---
 name: enforce-typescript-strict
-description: Enforce strict TypeScript with unknown at boundaries, no unsafe assertions or enums, strong inference, exhaustive unions, and runtime validation of external data.
+description: Enforce strict TypeScript with unknown at boundaries, no unsafe assertions or enums, strong inference, exhaustive unions, and runtime validation of external data. Use on any .ts/.tsx edit. Triggers on `as any`, `as unknown as`, `@ts-ignore`, non-null `!`, a failing `tsc --noEmit`, untyped JSON or API responses entering the app, and a switch over a union that may miss a case.
 ---
 
 # enforce-typescript-strict

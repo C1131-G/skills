@@ -1,17 +1,17 @@
 ---
 name: apply-next-shell-nav
-description: Apply a persistent Next.js App Router shell with nested sidebars, correct deep-link first paint, private session chrome, and stable soft navigation.
+description: Apply a persistent Next.js App Router shell with nested sidebars, correct deep-link first paint, private session chrome, and stable soft navigation. Triggers on "add a sidebar", "sidebar open/close", collapsible or responsive nav, a layout that remounts or flashes on navigation, nav state lost on refresh, and chrome that should only render for logged-in users.
 ---
 
 # apply-next-shell-nav
 
-Use this skill directly for Next.js application shells. Pair it with `apply-react-suspense` for boundary placement and `apply-native-feel-nav` for visual navigation motion.
+Use this skill directly for Next.js application shells. Pair it with `apply-react-async-ui` for boundary placement and `apply-native-feel-nav` for visual navigation motion.
 
 Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Patterns for **Next.js App Router dashboards** (Cache Components era): a persistent shell, nested product sidebar, correct deep-link first paint, and soft nav that does not skeleton the chrome.
 
-Stack gate: **Next.js** in `package.json`. Prefer with `cacheComponents` / Partial Prefetching when available (Next 16+). Pair `apply-react-suspense` for boundary shape; pair `apply-native-feel-nav` only for visual motion — this skill owns **structure and data placement**, not transitions.
+Stack gate: **Next.js** in `package.json`. Prefer with `cacheComponents` / Partial Prefetching when available (Next 16+). Pair `apply-react-async-ui` for boundary shape; pair `apply-native-feel-nav` only for visual motion — this skill owns **structure and data placement**, not transitions.
 
 Canonical demo: [aurorascharff/sidebar-subnav-demo](https://github.com/aurorascharff/sidebar-subnav-demo).
 
