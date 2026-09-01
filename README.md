@@ -81,9 +81,9 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 
 ## Making skills actually get loaded
 
-Skill loading is probabilistic — an agent reads the description and decides. To make it reliable in a given project, run [setup-agent-rules](skills/engineering/setup-agent-rules/SKILL.md) there. It writes a decision-tree table into that project's `AGENTS.md`, tailored to the stack the project actually uses, so every agent is told which skill to load rather than left to infer it.
+Skill loading is probabilistic — an agent reads the description and decides. To make it reliable in a given project, run [setup-agent-rules](skills/engineering/setup-agent-rules/SKILL.md) there. It writes a decision-tree table into that project's `AGENTS.md` covering every skill, so an agent is told which one to load rather than left to infer it from a description.
 
-`AGENTS.md` is read by most agents; Claude Code reads `CLAUDE.md`, so the skill points one at the other instead of maintaining two copies.
+`AGENTS.md` is the single source of truth — the skill deliberately does not create a `CLAUDE.md` or any other per-agent copy, since a second file is a second thing to drift.
 
 ## License
 

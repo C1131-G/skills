@@ -17,6 +17,7 @@ Apply when writing or reviewing server-state code. **Load disclosed files only f
 | mutate vs mutateAsync, MutationCache, concurrent optimistic, data-before-error | [mutations.md](mutations.md) |
 | select / transform, tracked queries, error/toast strategy | [render.md](render.md) |
 | Testing, placeholder vs initialData, Router+Query, WebSockets, forms, context | [advanced.md](advanced.md) |
+| Writing the cache directly: `setQueryData`, `setQueriesData`, seeding, infinite shape | [cache-writes.md](cache-writes.md) |
 | Next.js App Router: providers, HydrationBoundary, `use cache` / `cacheTag`, `updateTag` | [nextjs.md](nextjs.md) |
 
 Optimistic UI, pending state, and loading boundaries → `apply-react-async-ui`. Client UI state → a dedicated client-state store, not the query cache.
@@ -27,7 +28,7 @@ Optimistic UI, pending state, and loading boundaries → `apply-react-async-ui`.
 2. **Hierarchical key factories**; key = dependency array of the `queryFn`.
 3. **`queryOptions` factories** over custom hooks as the primary share unit.
 4. **Await/return** `invalidateQueries` in mutation callbacks.
-5. Prefer **`setQueriesData`** when the mutation already returns the new entity.
+5. Prefer **`setQueriesData`** when the mutation already returns the new entity; cache writes are **immutable**, exact-key, and mark data fresh.
 6. Explicit **`staleTime`**; do not confuse with `gcTime`.
 7. **Parallel** independent queries (`useQueries` when N is dynamic).
 8. **`select`** for slices; no object rest from `useQuery` (breaks tracking).

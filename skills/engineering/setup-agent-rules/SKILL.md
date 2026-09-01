@@ -1,99 +1,78 @@
 ---
 name: setup-agent-rules
-description: Write or update a project's AGENTS.md so every AI agent working in it knows which skills to load for which task. Use when setting up a new repository, when skills exist but never get used, when onboarding a project to Claude Code / Cursor / Codex / Copilot, or when asked to "make the agent follow my rules", "add agent instructions", or "set up AGENTS.md".
+description: Write or update a project's AGENTS.md with a decision tree telling every AI agent which skill to load for which task. Use when setting up a new repository, when skills exist but never get used, when onboarding a project to Claude Code / Cursor / Codex / Copilot, or when asked to "make the agent follow my rules", "add agent instructions", or "set up AGENTS.md".
 ---
 
 # setup-agent-rules
 
-Skill loading is probabilistic: an agent reads a skill's description and decides whether it applies. `AGENTS.md` is not — it is loaded into context every session, by every agent that supports it. Putting a decision tree there converts "the agent might load the right skill" into "the agent is told which one to load."
+Skill loading is probabilistic: an agent reads a skill's description and decides whether it applies. `AGENTS.md` is not — it is loaded into context every session, by every agent that reads it. Putting a decision tree there converts "the agent might load the right skill" into "the agent is told which one to load."
 
-This skill writes that decision tree into a target project, tailored to what the project actually uses.
+This skill writes that decision tree into a target project.
 
 Also apply `enforce-code-quality` to any file you change here.
 
 ## Procedure
 
-### 1. Detect what the project actually uses
+### 1. Check what already exists
 
-Do not write rules for skills the project has no use for — a Next.js rule in a Vite repo is noise that makes the whole file easier to ignore. Read `package.json` dependencies and check the source:
-
-| Signal | Include |
-|---|---|
-| always | `enforce-code-quality` |
-| `typescript` in dependencies, or any `.ts`/`.tsx` | `enforce-typescript-strict` |
-| `react` | `audit-react-effects`, `apply-react-async-ui` |
-| `@tanstack/react-query` | `use-tanstack-query` |
-| `@tanstack/react-router` | `use-tanstack-router` |
-| `sonner`, or any toast library | `apply-toasts` |
-| `next` | `apply-next-shell-nav` |
-| React Native feel wanted, or mobile-first web | `apply-native-feel-nav` |
-
-When a signal is ambiguous, ask rather than guessing. An unused row costs more than a missing one.
-
-### 2. Check what already exists
-
-- Read any existing `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/*`, `.github/copilot-instructions.md`.
+- Read any existing `AGENTS.md`.
 - Run `git status` and preserve unrelated changes.
-- If a skills section already exists, **update it in place**. Never append a second copy, and never overwrite the project's own instructions.
+- If a "Which skill to load" section already exists, **update it in place**. Never append a second copy, and never overwrite the project's own instructions — they outrank anything this skill adds.
 
-### 3. Write the block
+### 2. Write the block into AGENTS.md
 
-Insert this section into `AGENTS.md`, keeping every existing section. Include **only the rows that step 1 selected**:
+Insert this section, keeping every existing section intact. Write **the whole table** — every skill appears, so an agent never has to guess whether a situation is covered:
 
 ```markdown
 ## Which skill to load
 
-Load the skill before writing the code, not after.
+Load the skill before writing the code, not after. Two or more rows can apply at once — load all of them.
 
 | When | Load |
 |---|---|
-| Any code change, any language | `enforce-code-quality` |
-| Editing a `.ts` / `.tsx` file | `enforce-typescript-strict` |
-| About to write a `useEffect` | `audit-react-effects` |
-| An interaction that waits on the server — submit, save, load | `apply-react-async-ui` |
-| File imports `useQuery` / `useMutation` / `queryClient` | `use-tanstack-query` |
-| File has `createFileRoute`, a loader, or reads search params | `use-tanstack-router` |
+| Any code change, in any language | `enforce-code-quality` |
+| Editing a `.ts` or `.tsx` file | `enforce-typescript-strict` |
+| About to write or edit a `useEffect` | `audit-react-effects` |
+| An interaction that waits on the server — submit, save, load, spinner placement | `apply-react-async-ui` |
+| The file imports `useQuery`, `useMutation`, `useSuspenseQuery`, or `queryClient` | `use-tanstack-query` |
+| The file has `createFileRoute`, a route loader, or reads search params | `use-tanstack-router` |
 | Showing the user a message about something that happened | `apply-toasts` |
-| Route transitions, gestures, tap feedback, safe areas | `apply-native-feel-nav` |
-| Next.js layout shell, sidebar, or streaming boundaries | `apply-next-shell-nav` |
-
-Two or more rows can apply at once — load all of them.
+| Route transitions, gestures, tap feedback, safe areas, mobile viewport | `apply-native-feel-nav` |
+| A Next.js layout shell, sidebar, or streaming boundary | `apply-next-shell-nav` |
+| Onboarding a repository, or this table needs updating | `setup-agent-rules` |
+| Reading or reviewing a research paper | `read-research-paper` |
 ```
 
-Keep it a table. It is loaded on every session in this repository, so length is a real cost; do not expand it into prose.
+Keep it a table. It sits in context for every session in this repository, so length is a real cost — do not expand it into prose or add commentary between rows.
 
-### 4. Point the other agent files at it
+### 3. Do not create CLAUDE.md
 
-`AGENTS.md` is read by Codex, Cursor, and others. Claude Code reads `CLAUDE.md`. Rather than maintaining two copies that drift, create or update `CLAUDE.md` as a pointer:
+`AGENTS.md` is the single source of truth. Do not create a `CLAUDE.md`, a `.cursor/rules/` file, or any other per-agent copy — a second file is a second thing to drift.
 
-```markdown
-See [AGENTS.md](AGENTS.md) for repository guidance and which skill to load for which task.
-```
+If the project **already has** a `CLAUDE.md`, leave its content alone. Do not migrate it, and do not duplicate the table into it.
 
-If the project has `.cursor/rules/` or `.github/copilot-instructions.md`, add the same one-line pointer there. One source of truth, several doors into it.
+### 4. Verify the skills are installed
 
-### 5. Verify the skills are actually installed
-
-The table is useless if the named skills are not on the machine. Confirm they are:
+The table is useless if the named skills are not on the machine:
 
 ```bash
 npx skills@latest add C1131-G/skills --all
 ```
 
-If a skill in the table is not installed, say so plainly rather than leaving a row that resolves to nothing.
+If a row names a skill that is not installed, say so plainly rather than leaving a row that resolves to nothing.
 
-### 6. Report
+### 5. Report
 
-State which rows you included and why, which files you changed, and anything you deliberately left out.
+State what you changed in `AGENTS.md`, whether you created it or merged into an existing file, and anything you deliberately left untouched.
 
 ## Rules
 
-1. **Only rows the project earns.** Detection drives the table, not a blanket copy.
-2. **Merge, never clobber.** The project's existing instructions outrank anything this skill adds.
-3. **One source of truth.** `AGENTS.md` holds the content; every other agent file points at it.
+1. **Every skill gets a row.** The table is the complete map, not a selection.
+2. **Merge, never clobber.** The project's existing instructions win.
+3. **`AGENTS.md` only.** No `CLAUDE.md`, no per-agent duplicates.
 4. **Keep it short.** This text is in context for every session in the repository, forever.
-5. **A row names a real installed skill**, or it does not go in.
+5. **A row names a real installed skill**, or you report that it does not.
 
 ## Done when
 
-`AGENTS.md` contains a decision-tree table covering exactly the skills this project uses; existing instructions are intact; `CLAUDE.md` and any other agent file point at it rather than duplicating it; and every named skill is installed.
+`AGENTS.md` contains the complete decision-tree table; any pre-existing instructions in that file are intact; no `CLAUDE.md` or other per-agent copy was created; and every named skill is confirmed installed.

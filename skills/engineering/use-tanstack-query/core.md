@@ -93,6 +93,8 @@ useMutation({
 });
 ```
 
+The mechanics of the write itself — exact-key matching, the immutable updater, what `undefined` means, and why it marks data fresh — are in [cache-writes.md](cache-writes.md).
+
 For the optimistic-update side of a mutation (`onMutate`/`onError`/rollback), use `apply-react-async-ui`, which also covers the pending state and duplicate-submit protection the interaction needs.
 
 ## 5. When a variable key produces a brand-new cache entry, pre-fill it from a broader cached query if you can
