@@ -31,7 +31,7 @@ Larger skills are a thin `SKILL.md` router plus disclosed reference files. Open 
 |---|---|
 | [enforce-code-quality](./enforce-code-quality/SKILL.md) | Minimal diffs, size limits, naming, verification, commit hygiene |
 | [enforce-typescript-strict](./enforce-typescript-strict/SKILL.md) | Strictness rules and compiler flags |
-| [install-cibi-rules](./install-cibi-rules/SKILL.md) | Vendoring the repo's Oxlint rules into a project |
+| [setup-agent-rules](./setup-agent-rules/SKILL.md) | Writing a project's `AGENTS.md` so the right skills get loaded |
 
 ## How they connect
 

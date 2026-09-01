@@ -1,40 +1,47 @@
 # Repository guidance
 
-This repository holds two things: **executable rules** (`src/`) and **written skills** (`skills/`). They are not interchangeable, and which one a piece of knowledge belongs in is the main design decision here.
-
-## The rule
-
-**If a claim can be checked mechanically, it belongs in `src/rules/` as a lint rule. If it needs judgment, it belongs in `skills/` as prose.**
-
-A lint rule runs on every commit, in CI, for every agent and every human. A skill only applies if something chooses to read it. Push each piece of knowledge to the strongest form that can hold it.
+This repository holds agent skills — written guidance, one directory per skill, installed into agents with the `skills` CLI.
 
 ## Layout
 
 | Path | Holds |
 |---|---|
-| `src/rules/` | One rule per file, with its `.test.ts` beside it |
-| `src/shared/` | Helpers used by more than one rule |
-| `src/index.ts` | The plugin entry point that registers every rule |
-| `skills/<category>/<name>/` | Written skills — `SKILL.md` plus disclosed reference files |
-| `skills/engineering/install-cibi-rules/` | The installer skill; `assets/cibi/` is a generated copy of `src/` |
-| `scripts/sync-skill-assets.mjs` | Keeps that copy in step with `src/` |
+| `skills/<category>/<name>/SKILL.md` | The skill: frontmatter, rules, `## Done when` |
+| `skills/<category>/<name>/*.md` | Disclosed reference files, opened only for the branch that needs them |
+| `skills/<category>/README.md` | Category index |
 
-## Working on rules
+## Writing a skill
 
-- Use Oxlint's ESTree API. Do not add a second production parser.
-- Walk up with `node.parent`; the `:exit` visitor form is not used here.
-- Every semantic change needs `RuleTester` coverage — both the case that must fire and the near-miss that must not.
-- Keep rules generic. No application-specific names, paths, or exceptions.
-- Run `npm run sync:skill-assets` after changing anything under `src/`.
-- Run `npm run check` before committing.
+- **The `description` is the whole trigger.** It is the only text an agent sees when deciding whether to load the skill. Write it as the words someone actually types and the code signals that imply the skill — `"the list doesn't update after saving"`, `"any file importing useQuery"` — not as a topic label like "React data fetching."
+- **Split at roughly 150 lines.** A long skill becomes a thin `SKILL.md` router plus disclosed references. Split when a reader needs *one* section; merge when the sections are always used together.
+- **One canonical write-up per pattern.** Cross-reference it. Never copy a pattern into a second skill — the copies drift.
+- **Every `SKILL.md` ends with `## Done when`**, stating the observable finish condition.
+- **Every skill applies `enforce-code-quality`**, and TypeScript work also applies `enforce-typescript-strict`.
 
-## Working on skills
+## House format
 
-- Frontmatter `description` is the only text an agent sees when deciding whether to load the skill. Write it as triggers — the words someone actually types, and the imports that imply the skill — not as a topic label.
-- A skill over ~150 lines becomes a thin `SKILL.md` router plus disclosed reference files. Split when a reader needs *one* section; merge when sections are always used together.
-- Every `SKILL.md` ends with `## Done when`.
-- One canonical write-up per pattern. Cross-reference it; never copy it into a second skill.
+```markdown
+---
+name: <matches the directory name>
+description: <what it does> + <when to use> + <concrete triggers>
+---
 
-## Verification
+# <name>
 
-`npm run check` runs lint, the rule tests, typecheck, and the skill-asset drift check. It is the same command CI runs.
+<one line on purpose, and which skills to pair it with>
+
+<routing table, if the skill has reference files>
+
+## Rules  (or numbered sections)
+
+## Review checklist   — what to flag in existing code
+
+## Done when
+```
+
+## Before committing
+
+- Every `SKILL.md` parses as YAML frontmatter with `name` matching its directory.
+- Every relative link resolves.
+- Every backticked skill reference names a skill that exists — deleting a skill means fixing everything that pointed at it.
+- The category README and the root README list the same set of skills as the filesystem.
