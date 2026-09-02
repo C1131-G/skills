@@ -1,5 +1,7 @@
 # Detection — stack to skills
 
+Two inventories drive the audit: what the **project** contains, and what **skills are installed on the machine**. Build both before selecting anything.
+
 ## 1. Find every manifest
 
 A single root `package.json` is the exception, not the rule. Collect all of them, minus dependencies:
@@ -10,7 +12,7 @@ find . -name package.json -not -path '*/node_modules/*' -not -path '*/.git/*'
 
 Read each one. For a monorepo, audit each workspace against the skills **its own** manifest selects — a Next.js app and a plain library in the same repo do not get the same rule set. Say which workspace each finding belongs to.
 
-Also read, when present: `tsconfig.json` (and every extended base), `next.config.*`, `vite.config.*`, `tailwind.config.*`, `eslint.config.*` / `.eslintrc.*`, and the lockfile for the **resolved** versions.
+Also read, when present: `tsconfig.json` (and every extended base), `next.config.*`, `vite.config.*`, `app.json` / `app.config.*` (Expo), `tailwind.config.*`, `eslint.config.*` / `.eslintrc.*`, `vitest.config.*`, and the lockfile for the **resolved** versions.
 
 ```bash
 node -e "const p=require('./package.json');console.log(JSON.stringify({...p.dependencies,...p.devDependencies},null,2))"
@@ -18,35 +20,90 @@ node -e "const p=require('./package.json');console.log(JSON.stringify({...p.depe
 
 Record the installed major of anything a rule depends on — React 18 and React 19 do not have the same async-UI primitives, and TanStack Query v4 and v5 do not have the same callbacks.
 
-## 2. Map dependencies to skills
+## 2. Inventory every installed skill
 
-| Present in a manifest | Select |
+The audit uses **all suitable skills on the machine**, not only the ones from this repository. Search every root that exists:
+
+```bash
+for root in ~/.agents/skills ~/.claude/skills .agents/skills .claude/skills .codex/skills .cursor/skills; do
+  [ -d "$root" ] && echo "== $root" && ls "$root"
+done
+```
+
+Then read only the frontmatter of each — name, role, description — never the bodies at this stage:
+
+```bash
+for f in ~/.agents/skills/*/SKILL.md; do awk '/^---$/{n++; next} n==1' "$f" | grep -E '^(name|role|description|disable-model-invocation):' ; echo "--- $f"; done
+```
+
+The `description` is the whole matching surface: it names the triggers and the code signals. Match the project's signals against it.
+
+### Respect main / leaf routing
+
+Some libraries mark a skill's place in a hierarchy. Honor it:
+
+| Frontmatter | Kind | Select it? |
+|---|---|---|
+| `role: entry` | Entry orchestrator (`skill-master`) | Yes — if present, it defines the run's mode and ordering; follow it |
+| `role: router` (`route-*`) | Main router over leaves | **Yes — select the router** |
+| `disable-model-invocation: true` on a child, or a router lists it as a leaf | Leaf | **No — never select directly.** It is audited *through* its router |
+| No role | Standalone main | Yes, when its description matches a project signal |
+
+Selecting a leaf that belongs to a router splits the audit and loses the router's cross-leaf rules. Name the router; record which leaves its Decision table selects for this project, and audit those leaves' rules under it.
+
+De-duplicate across roots by skill name. If two roots hold the same name with different content, audit the one the agent would actually load (project root beats home root), and report the divergence.
+
+## 3. Map project signals to skills
+
+Highest-confidence rows first. A name in this table is only selected **if the inventory from step 2 contains it** — otherwise it is a gap, reported in step 4.
+
+| Present in a manifest / repo | Select |
 |---|---|
 | *anything at all* | `enforce-code-quality` |
 | `typescript`, or any `.ts` / `.tsx` file | `enforce-typescript-strict` |
-| `react` | `audit-react-effects`, `apply-react-async-ui` |
-| `next` | `apply-next-shell-nav`, plus the `react` rows |
+| `react` | `audit-react-effects`, plus `route-react-async-ui` (or `apply-react-async-ui` if no router is installed) |
+| **any `@tanstack/*` package** | `route-tanstack` — see the TanStack section below |
+| `next` | the Next.js architecture / shell skills in the inventory, plus every `react` row |
+| `expo`, `react-native` | the `expo-*` / react-native skills whose descriptions match what the repo actually does (router, data fetching, UI, EAS) |
 | `sonner` | `apply-toasts` |
-| `react-hot-toast`, `react-toastify`, `@radix-ui/react-toast`, or a hand-rolled toast component | `apply-toasts` — audit it, and include the migration to `sonner` in the plan as a recommendation, not a `FAIL` |
+| `react-hot-toast`, `react-toastify`, `@radix-ui/react-toast`, or a hand-rolled toast | `apply-toasts` — audit it, and put the migration to `sonner` in the plan as a recommendation, not a `FAIL` |
+| `zustand`, `jotai`, `redux` | the client-state skill in the inventory (`use-zustand`) — and check the server/client state split against the TanStack rules |
+| `vitest`, `jest` | the testing skills (`vitest`, `test-backend` / its router `route-backend`) |
+| `fastify`, `express`, `hono`, a `prisma`/`drizzle` schema | `route-backend` (or its standalone equivalents) |
+| `supabase`, `@supabase/*` | the Supabase skills |
+| `framer-motion` / `motion`, view transitions, gestures, mobile viewport | the animation and native-feel skills (`animate`, `apply-native-feel-nav`) |
+| *always, in step 4 of the procedure* | `setup-agent-rules` |
+
+Skills with no project signal — writing, video, marketing, research, design-review skills — are **not** selected by a code audit. List them as rejected with "not a code-audit skill", once, as a group.
+
+## 4. TanStack intent
+
+Any `@tanstack/*` dependency means TanStack is the project's intent, and the whole TanStack rule set is in scope — not just the one package someone remembered to mention.
+
+| Dependency | Leaf whose rules apply |
+|---|---|
 | `@tanstack/react-query`, `@tanstack/query-core`, `@tanstack/vue-query` | `use-tanstack-query` |
-| `@tanstack/react-router`, `@tanstack/router-plugin` | `use-tanstack-router` |
-| `framer-motion` / `motion`, `next/link` route transitions, `viewport` meta, or any mobile-targeted UI | `apply-native-feel-nav` |
-| *always, in step 4* | `setup-agent-rules` |
+| `@tanstack/react-router`, `@tanstack/router-plugin`, `@tanstack/start` | `use-tanstack-router` |
+| `@tanstack/react-form` | `use-tanstack-form` |
+| `@tanstack/react-table` | `use-tanstack-table` |
 
-`read-research-paper` is never selected by a dependency. Reject it unless the repository actually holds papers to read.
+Procedure:
 
-Both TanStack skills selected together also means auditing the Router+Query loader boundary in `use-tanstack-router/query-integration.md`.
-
-## 3. Handle what the table does not cover
-
-- **A framework with no matching skill** (Vue, Svelte, Angular, a backend-only service): select `enforce-code-quality` and `enforce-typescript-strict` only, and say plainly that the library has no skill for the rest of the stack. Do not stretch a React rule onto a non-React codebase.
-- **No `package.json` at all**: audit against `enforce-code-quality` and report that dependency-driven selection was not possible.
-- **A dependency present but unused** (in the manifest, zero imports): still select the skill, and note the zero-import finding — an unused dependency is itself a fix-plan item.
+1. If `route-tanstack` is installed, **invoke it** — it Decision-selects the leaves. Audit every leaf its Decision table matches for this project's dependencies, and its cross-leaf connection rules (Query owns keys and invalidation; async-UI owns pending and optimistic; no `useEffect` for route or server data; server state in Query, client UI state in the client-state store).
+2. If `route-tanstack` is not installed, load the `use-tanstack-*` skills for the present dependencies directly, and say the router was unavailable.
+3. Query **and** Router both present → the loader boundary is mandatory scope: `ensureQueryData` / `prefetchQuery` in the loader, `useSuspenseQuery` on the same `queryOptions` in the component (`use-tanstack-router/query-integration.md`).
+4. A TanStack package in the manifest with zero imports is still audited, and the unused dependency is a fix-plan item.
 
 ```bash
-grep -rl "@tanstack/react-query" --include=*.ts --include=*.tsx --include=*.js --include=*.jsx . | head
+grep -rn "@tanstack/" --include=*.ts --include=*.tsx --include=*.js --include=*.jsx --include=package.json . | grep -v node_modules | head -40
 ```
 
-## 4. Record the selection
+## 5. Handle what the tables do not cover
 
-Before auditing anything, write the selection table: skill, the exact dependency and version that selected it, and the file the dependency was found in. Every library skill not in that table is listed underneath with the reason it was rejected.
+- **A stack with no matching installed skill** (Vue, Svelte, Angular, Go, Python): select `enforce-code-quality` and, for TypeScript, `enforce-typescript-strict`, then say plainly that no installed skill covers the rest. Do not stretch a React rule onto a non-React codebase.
+- **A selected skill missing from every root**: that is the install gap handled in step 3 of the procedure.
+- **No `package.json` at all**: audit against `enforce-code-quality` and report that dependency-driven selection was not possible.
+
+## 6. Record the selection
+
+Before auditing anything, write the selection table: skill, the root it was found in, the exact dependency and version that selected it, and the manifest that dependency came from. Every inventoried skill not selected is listed underneath with its reason — individually for code skills, as one group for the non-code ones.

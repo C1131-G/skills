@@ -8,7 +8,8 @@ Emit these five sections, in order. Nothing else.
 ## Setup
 
 - Manifests read: `package.json`, `apps/web/package.json`
-- Stack: Next 15.1.0, React 19.0.0, TypeScript 5.7.2, @tanstack/react-query 5.62.0
+- Stack: Next 15.1.0, React 19.0.0, TypeScript 5.7.2, @tanstack/react-query 5.62.0, @tanstack/react-form 1.0.0
+- Skill roots inventoried: `~/.agents/skills` (100), `~/.claude/skills` (40), project `.claude/skills` (0) — 112 unique after de-duplication
 - Skills installed: 8 of 8 selected present   (or: installed `use-tanstack-router`, re-checked, now present)
 - AGENTS.md decision table: **confirmed applied**   (or: **missing — applied via `setup-agent-rules`**, or **stale — 2 rows updated**)
 ```
@@ -20,13 +21,17 @@ The AGENTS.md line is mandatory on every run, including when nothing changed.
 ```markdown
 ## Skills selected
 
-| Skill | Selected by | Found in |
-|---|---|---|
-| enforce-code-quality | unconditional | — |
-| use-tanstack-query | `@tanstack/react-query@5.62.0` | `apps/web/package.json` |
+| Skill | Root | Selected by | Found in |
+|---|---|---|---|
+| enforce-code-quality | `~/.agents/skills` | unconditional | — |
+| route-tanstack (router) | `~/.agents/skills` | `@tanstack/*` present | `apps/web/package.json` |
+| ├ use-tanstack-query (leaf) | `~/.agents/skills` | `@tanstack/react-query@5.62.0` | `apps/web/package.json` |
+| └ use-tanstack-form (leaf) | `~/.agents/skills` | `@tanstack/react-form@1.0.0` | `apps/web/package.json` |
 
-Not selected: `use-tanstack-router` (no `@tanstack/react-router` in any manifest) · `read-research-paper` (no papers in repo)
+Not selected: `use-tanstack-router` — leaf of `route-tanstack`, no `@tanstack/react-router` in any manifest · `use-zustand` — no client-state library · 61 non-code skills (writing, video, marketing, design review) — not code-audit skills
 ```
+
+Leaves appear indented under the router that selected them. A leaf never appears without its router.
 
 ## 3. Rule coverage
 

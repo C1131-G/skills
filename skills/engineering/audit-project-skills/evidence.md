@@ -8,6 +8,7 @@ For each selected skill, read `SKILL.md` and **every** file it routes to, then w
 2. The `## Review checklist` — each line is a rule.
 3. Any imperative in the prose ("never conditional hooks", "await `invalidateQueries`").
 4. The `## Done when` line — the skill's own finish condition.
+5. For a router, its **Connections** / cross-leaf table — those rules belong to no single leaf and are the ones an audit of leaves alone would miss.
 
 Number them `<skill>-<n>` (`use-tanstack-query-7`). The count you extract is the count that must appear in the report.
 
