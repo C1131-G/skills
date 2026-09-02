@@ -51,7 +51,7 @@ npx skills update
 
 | Skill | Covers |
 |---|---|
-| [enforce-code-quality](skills/engineering/enforce-code-quality/SKILL.md) | Minimal diffs, size limits, naming, verification, commit hygiene |
+| [enforce-code-quality](skills/engineering/enforce-code-quality/SKILL.md) | Minimal diffs, size limits (vendored and generated code exempt), naming, verification, commit hygiene |
 | [enforce-typescript-strict](skills/engineering/enforce-typescript-strict/SKILL.md) | Strictness rules and compiler flags |
 | [setup-agent-rules](skills/engineering/setup-agent-rules/SKILL.md) | Writing a project's `AGENTS.md` so the right skills get loaded |
 | [audit-project-skills](skills/engineering/audit-project-skills/SKILL.md) | Picking suitable skills from every skill installed on the machine, then auditing the project against all of their rules |

@@ -29,7 +29,7 @@ Larger skills are a thin `SKILL.md` router plus disclosed reference files. Open 
 
 | Skill | Covers | References |
 |---|---|---|
-| [enforce-code-quality](./enforce-code-quality/SKILL.md) | Minimal diffs, size limits, naming, verification, commit hygiene | — |
+| [enforce-code-quality](./enforce-code-quality/SKILL.md) | Minimal diffs, size limits (vendored and generated code exempt), naming, verification, commit hygiene | — |
 | [enforce-typescript-strict](./enforce-typescript-strict/SKILL.md) | Strictness rules and compiler flags | — |
 | [setup-agent-rules](./setup-agent-rules/SKILL.md) | Writing a project's `AGENTS.md` so the right skills get loaded | — |
 | [audit-project-skills](./audit-project-skills/SKILL.md) | Picking the skills a project's `package.json` implies, then auditing every rule and planning the fixes | `detection.md`, `evidence.md`, `report.md` |

@@ -41,6 +41,20 @@ grep -rn "createFileRoute\|useNavigate\|loader:" --include=*.tsx --include=*.ts 
 grep -rn "toast(\|<Toaster" --include=*.tsx src
 ```
 
+### Exclude what the project did not author
+
+Before a file becomes a `FAIL`, check it is the project's own code. Vendored UI components (`components/ui/` from `shadcn`, other CLI-copied components), generated output (`*.gen.ts`, codegen clients, migrations), and `vendor/` are exempt from the size limits and from naming and DRY findings — see the exemption section of `enforce-code-quality`.
+
+```bash
+grep -rc '' --include=*.ts --include=*.tsx -r src app components 2>/dev/null \
+  | awk -F: '$2 > 300' \
+  | grep -v -E '/(components/ui|vendor|third_party|__generated__)/|\.gen\.|\.generated\.'
+```
+
+Report the exclusion rather than hiding it: `12 files over 300 lines — 9 are shadcn components under components/ui/ and routeTree.gen.ts, excluded; 3 are project code, listed below`. An audit that silently drops them looks identical to one that never checked.
+
+A wrapper *around* an exempt file is project code and is audited normally.
+
 Config rules are checked against the config, not against prose:
 
 ```bash

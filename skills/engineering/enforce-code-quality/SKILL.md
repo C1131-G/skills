@@ -25,6 +25,20 @@ For TypeScript code, also apply `enforce-typescript-strict`.
 12. **No bare generics** — not alone: `data`, `info`, `item`, `temp`, `util`, `helper`, `handler`, `manager`.
 13. **Name specificity matches job specificity** — no `2` / `New` / `Copy` suffixes.
 
+## Exempt from the size limits
+
+Rules 5 and 6 (the 300-line file and 250-line function limits) do **not** apply to code the project did not author:
+
+- **Vendored UI components** — `shadcn/ui` files under `components/ui/`, and anything else a CLI copied in (Radix wrappers, `tremor`, `magicui`, `aceternity`, a copied `data-table.tsx`). A 400-line `sidebar.tsx` from `npx shadcn add` is upstream's file, not a violation.
+- **Generated output** — API clients, `*.gen.ts` (TanStack Router's `routeTree.gen.ts`), Prisma/Drizzle clients, GraphQL codegen, protobuf, OpenAPI types, migrations, snapshots.
+- **Third-party code checked into the repo** — `vendor/`, `third_party/`, patches.
+
+For these files: leave them alone. Do not split them to satisfy a limit, do not rename their exports, and do not reformat them — the next `add` or `generate` overwrites the edit and the diff is lost. The naming and DRY rules are likewise judged on your own code, not on upstream's.
+
+Two things still apply. **Your** code that wraps or composes an exempt file is in scope and bound by every rule. And a deliberate divergence from upstream — a shadcn component you have genuinely made your own — stops being exempt: say so, and it is held to the limits like any other file.
+
+When a limit check flags a file, resolve which side of this line it is on before reporting it.
+
 ## Verification contract for code changes
 
 Apply this contract whenever the task authorizes writing or changing application code. A review-only request remains read-only.
@@ -50,4 +64,4 @@ Verification proves the change works; these rules keep the change reviewable.
 
 ## Done when
 
-In-scope code respects limits and naming; diffs stay minimal; violations are fixed or explicitly deferred. After code changes, focused tests and the full available affected-app verification suite pass, or the final response identifies a concrete external or unrelated blocker. Anything committed contains only the intended change.
+In-scope code respects limits and naming — vendored and generated files excluded, and any exclusion named; diffs stay minimal; violations are fixed or explicitly deferred. After code changes, focused tests and the full available affected-app verification suite pass, or the final response identifies a concrete external or unrelated blocker. Anything committed contains only the intended change.
