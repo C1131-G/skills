@@ -27,11 +27,12 @@ Larger skills are a thin `SKILL.md` router plus disclosed reference files. Open 
 
 ## Cross-cutting
 
-| Skill | Covers |
-|---|---|
-| [enforce-code-quality](./enforce-code-quality/SKILL.md) | Minimal diffs, size limits, naming, verification, commit hygiene |
-| [enforce-typescript-strict](./enforce-typescript-strict/SKILL.md) | Strictness rules and compiler flags |
-| [setup-agent-rules](./setup-agent-rules/SKILL.md) | Writing a project's `AGENTS.md` so the right skills get loaded |
+| Skill | Covers | References |
+|---|---|---|
+| [enforce-code-quality](./enforce-code-quality/SKILL.md) | Minimal diffs, size limits, naming, verification, commit hygiene | — |
+| [enforce-typescript-strict](./enforce-typescript-strict/SKILL.md) | Strictness rules and compiler flags | — |
+| [setup-agent-rules](./setup-agent-rules/SKILL.md) | Writing a project's `AGENTS.md` so the right skills get loaded | — |
+| [audit-project-skills](./audit-project-skills/SKILL.md) | Picking the skills a project's `package.json` implies, then auditing every rule and planning the fixes | `detection.md`, `evidence.md`, `report.md` |
 
 ## How they connect
 
@@ -39,3 +40,4 @@ Larger skills are a thin `SKILL.md` router plus disclosed reference files. Open 
 - `use-tanstack-router` → owns the canonical Router+Query loader pattern; `use-tanstack-query/advanced.md` points at it.
 - `apply-next-shell-nav` owns shell **structure**; `apply-native-feel-nav` owns the **motion** on top of it.
 - `audit-react-effects` applies wherever another system (a loader, a query, an event handler) should own the behavior instead.
+- `audit-project-skills` selects which of the above a given repository needs, and calls `setup-agent-rules` when the routing table is missing or stale.

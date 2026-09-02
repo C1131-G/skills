@@ -54,6 +54,7 @@ npx skills update
 | [enforce-code-quality](skills/engineering/enforce-code-quality/SKILL.md) | Minimal diffs, size limits, naming, verification, commit hygiene |
 | [enforce-typescript-strict](skills/engineering/enforce-typescript-strict/SKILL.md) | Strictness rules and compiler flags |
 | [setup-agent-rules](skills/engineering/setup-agent-rules/SKILL.md) | Writing a project's `AGENTS.md` so the right skills get loaded |
+| [audit-project-skills](skills/engineering/audit-project-skills/SKILL.md) | Auditing a project against every rule of the skills its stack implies |
 
 ### Other
 
@@ -78,6 +79,7 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 | `use-tanstack-router` | `query-integration.md` |
 | `apply-toasts` | `motion.md` |
 | `audit-react-effects` | `CASES.md` |
+| `audit-project-skills` | `detection.md`, `evidence.md`, `report.md` |
 
 ## Making skills actually get loaded
 

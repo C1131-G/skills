@@ -40,6 +40,7 @@ Load the skill before writing the code, not after. Two or more rows can apply at
 | Route transitions, gestures, tap feedback, safe areas, mobile viewport | `apply-native-feel-nav` |
 | A Next.js layout shell, sidebar, or streaming boundary | `apply-next-shell-nav` |
 | Onboarding a repository, or this table needs updating | `setup-agent-rules` |
+| Auditing the repo against the skills its stack implies, or checking this setup is applied | `audit-project-skills` |
 | Reading or reviewing a research paper | `read-research-paper` |
 ```
 
