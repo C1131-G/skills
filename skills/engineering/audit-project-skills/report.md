@@ -10,7 +10,9 @@ Emit these five sections, in order. Nothing else.
 - Manifests read: `package.json`, `apps/web/package.json`
 - Stack: Next 15.1.0, React 19.0.0, TypeScript 5.7.2, @tanstack/react-query 5.62.0, @tanstack/react-form 1.0.0
 - Skill roots inventoried: `~/.agents/skills` (100), `~/.claude/skills` (40), project `.claude/skills` (0) — 112 unique after de-duplication
+- Dependency-shipped skills (`intent list`): 6 from `@tanstack/react-query@5.62.0`, `@tanstack/react-form@1.0.0` — 3 loaded, 1 flagged stale   (or: allowlist `intent.skills` was unset, added `@tanstack/*`)
 - Skills installed: 8 of 8 selected present   (or: installed `use-tanstack-router`, re-checked, now present)
+- AGENTS.md `intent-skills` block: **present, untouched**   (or: **written by `intent install`**)
 - AGENTS.md decision table: **confirmed applied**   (or: **missing — applied via `setup-agent-rules`**, or **stale — 2 rows updated**)
 ```
 

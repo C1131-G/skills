@@ -79,7 +79,7 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 | `use-tanstack-router` | `query-integration.md` |
 | `apply-toasts` | `motion.md` |
 | `audit-react-effects` | `CASES.md` |
-| `audit-project-skills` | `detection.md`, `evidence.md`, `report.md` |
+| `audit-project-skills` | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |
 
 ## Making skills actually get loaded
 

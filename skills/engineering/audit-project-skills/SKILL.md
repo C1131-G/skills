@@ -1,6 +1,6 @@
 ---
 name: audit-project-skills
-description: Audit a project against every rule of the skills its stack actually needs, then produce a prioritized fix plan. Reads package.json to pick relevant skills from every skill installed on the machine (~/.agents/skills, ~/.claude/skills, and project roots), installs any that are missing, confirms the project's AGENTS.md decision table is applied, reads 100% of each selected skill's rules, and checks every rule against the code with cited evidence. Any @tanstack/* dependency pulls in the whole TanStack rule set. Use when asked to "audit my project", "audit my setup", "check my skills are applied", "pick the right skills for this repo", "are my rules being followed", or when onboarding an unfamiliar codebase.
+description: Audit a project against every rule of the skills its stack actually needs, then produce a prioritized fix plan. Reads package.json to pick relevant skills from every skill installed on the machine (~/.agents/skills, ~/.claude/skills, and project roots), installs any that are missing, confirms the project's AGENTS.md decision table is applied, reads 100% of each selected skill's rules, and checks every rule against the code with cited evidence. Any @tanstack/* dependency pulls in the whole TanStack rule set plus the version-matched skills the packages ship through TanStack Intent. Use when asked to "audit my project", "audit my setup", "check my skills are applied", "pick the right skills for this repo", "are my rules being followed", or when onboarding an unfamiliar codebase.
 ---
 
 # audit-project-skills
@@ -13,7 +13,8 @@ Also apply `enforce-code-quality` to any file this skill writes (`AGENTS.md`, th
 
 | Step needs | Open |
 |---|---|
-| Reading `package.json`, inventorying the installed skills, mapping dependencies to them, TanStack intent, monorepos | [detection.md](detection.md) |
+| Reading `package.json`, inventorying the installed skills, mapping dependencies to them, monorepos | [detection.md](detection.md) |
+| A `@tanstack/*` dependency: Intent skills shipped by the package, the allowlist, precedence, the local TanStack rule set | [tanstack.md](tanstack.md) |
 | Turning a skill's prose into checkable rules, and proving each verdict | [evidence.md](evidence.md) |
 | The audit report and fix-plan format | [report.md](report.md) |
 
@@ -31,7 +32,9 @@ Skills come from every root on the machine — `~/.agents/skills`, `~/.claude/sk
 
 A skill is selected when a project signal matches it, or when its scope is unconditional (`enforce-code-quality` always; `enforce-typescript-strict` whenever a `.ts`/`.tsx` file exists).
 
-**Select routers, never their leaves.** A skill with `role: router` (or `role: entry`) owns its leaves and their cross-leaf rules; audit the leaves *under* it. Any `@tanstack/*` dependency selects the TanStack router and every leaf its Decision table matches — see the TanStack section of [detection.md](detection.md).
+**Select routers, never their leaves.** A skill with `role: router` (or `role: entry`) owns its leaves and their cross-leaf rules; audit the leaves *under* it. Any `@tanstack/*` dependency selects the TanStack router and every leaf its Decision table matches ([tanstack.md](tanstack.md)).
+
+**Dependencies can ship their own skills.** With TanStack present, run `npx @tanstack/intent@latest list --json` and load every matching skill it surfaces — those are versioned with the installed package, so they outrank a hand-written skill on what the installed API actually does. Allowlist, loading, and precedence are in [tanstack.md](tanstack.md).
 
 State the selection **and the rejections**: every inventoried skill is either selected with its trigger, or rejected with the reason ("no `@tanstack/react-router` in any manifest"; leaf of `route-tanstack`; not a code-audit skill). A silent omission is indistinguishable from an oversight.
 
@@ -55,11 +58,15 @@ Re-run the `ls` check afterwards and report the result — never claim an instal
 
 ### 4. Confirm the AGENTS.md wiring
 
-Skills that are installed but not routed still do not get loaded. Check the project's `AGENTS.md` for the "Which skill to load" decision table:
+Skills that are installed but not routed still do not get loaded. Two blocks belong in the project's `AGENTS.md`, and both are checked.
+
+**a. The "Which skill to load" decision table:**
 
 - **Missing** → apply `setup-agent-rules` now and say that you did.
 - **Present but stale** — a selected skill has no row, or a row names a skill that no longer exists → update it in place via `setup-agent-rules`.
 - **Present and complete** → say so explicitly. "Setup confirmed applied" is a required line of the report.
+
+**b. The `intent-skills` block**, when the project has Intent-shipping dependencies. Missing → run `npx @tanstack/intent@latest install`. Present → leave everything between `<!-- intent-skills:start -->` and `<!-- intent-skills:end -->` untouched; it is generated, and `setup-agent-rules` must merge around it rather than through it.
 
 ### 5. Load every selected skill in full
 
@@ -83,13 +90,14 @@ Emit the coverage table and the prioritized fix plan in the format in [report.md
 4. **No sampling.** Every rule of every selected skill appears in the output. If the codebase is too large to check a rule exhaustively, the verdict is `UNVERIFIABLE` with the reason — not an optimistic `PASS`.
 5. **Audit, then fix — separately.** Do not edit application code during the audit. The deliverable is the plan; apply it only on the user's word.
 6. **Missing skills get installed, not noted.** A selected-but-absent skill is fixed in step 3 and re-verified, not left as a recommendation.
-7. **`AGENTS.md` state is always reported**, including when nothing needed changing.
-8. **Report failures faithfully.** An install that failed, a check that could not run, a workspace that could not be parsed — each is stated with its error, not smoothed over.
+7. **A shipped skill beats a written one on API facts.** Where an Intent skill and a local skill disagree about the installed version's behavior, audit against the shipped skill, report the conflict, and never drop either side silently.
+8. **`AGENTS.md` state is always reported**, including when nothing needed changing.
+9. **Report failures faithfully.** An install that failed, a check that could not run, a workspace that could not be parsed — each is stated with its error, not smoothed over.
 
 ## Review checklist
 
-When reviewing a previous audit, flag: a selection drawn from one library when more were installed; a leaf audited without its router; a `@tanstack/*` dependency whose sibling TanStack rules went unaudited; a skill selected without a named trigger; a `PASS` with no citation; a rule count in the table lower than the rules in the skill; a fix plan item with no file path; an `AGENTS.md` claim made without reading the file; an install claimed without a follow-up check.
+When reviewing a previous audit, flag: a selection drawn from one library when more were installed; a leaf audited without its router; a `@tanstack/*` dependency whose sibling TanStack rules went unaudited; a TanStack project audited without running `intent list`; an edit made inside the `intent-skills` markers; a skill selected without a named trigger; a `PASS` with no citation; a rule count in the table lower than the rules in the skill; a fix plan item with no file path; an `AGENTS.md` claim made without reading the file; an install claimed without a follow-up check.
 
 ## Done when
 
-Every skill root on the machine was inventoried; every dependency-implied skill is installed and verified present; the project's `AGENTS.md` decision table is confirmed applied or was applied during the run; every rule of every selected skill carries a `PASS`/`FAIL`/`UNVERIFIABLE` verdict with cited evidence; and the fix plan lists each `FAIL` with a file path, the change, and its severity.
+Every skill root on the machine was inventoried; every skill the project's own dependencies ship was listed and, where relevant, loaded; every dependency-implied skill is installed and verified present; the project's `AGENTS.md` decision table is confirmed applied or was applied during the run; every rule of every selected skill carries a `PASS`/`FAIL`/`UNVERIFIABLE` verdict with cited evidence; and the fix plan lists each `FAIL` with a file path, the change, and its severity.

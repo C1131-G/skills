@@ -62,7 +62,7 @@ Highest-confidence rows first. A name in this table is only selected **if the in
 | *anything at all* | `enforce-code-quality` |
 | `typescript`, or any `.ts` / `.tsx` file | `enforce-typescript-strict` |
 | `react` | `audit-react-effects`, plus `route-react-async-ui` (or `apply-react-async-ui` if no router is installed) |
-| **any `@tanstack/*` package** | `route-tanstack` — see the TanStack section below |
+| **any `@tanstack/*` package** | `route-tanstack`, **plus the skills the packages ship via TanStack Intent** — see the TanStack section below |
 | `next` | the Next.js architecture / shell skills in the inventory, plus every `react` row |
 | `expo`, `react-native` | the `expo-*` / react-native skills whose descriptions match what the repo actually does (router, data fetching, UI, EAS) |
 | `sonner` | `apply-toasts` |
@@ -76,27 +76,9 @@ Highest-confidence rows first. A name in this table is only selected **if the in
 
 Skills with no project signal — writing, video, marketing, research, design-review skills — are **not** selected by a code audit. List them as rejected with "not a code-audit skill", once, as a group.
 
-## 4. TanStack intent
+## 4. TanStack
 
-Any `@tanstack/*` dependency means TanStack is the project's intent, and the whole TanStack rule set is in scope — not just the one package someone remembered to mention.
-
-| Dependency | Leaf whose rules apply |
-|---|---|
-| `@tanstack/react-query`, `@tanstack/query-core`, `@tanstack/vue-query` | `use-tanstack-query` |
-| `@tanstack/react-router`, `@tanstack/router-plugin`, `@tanstack/start` | `use-tanstack-router` |
-| `@tanstack/react-form` | `use-tanstack-form` |
-| `@tanstack/react-table` | `use-tanstack-table` |
-
-Procedure:
-
-1. If `route-tanstack` is installed, **invoke it** — it Decision-selects the leaves. Audit every leaf its Decision table matches for this project's dependencies, and its cross-leaf connection rules (Query owns keys and invalidation; async-UI owns pending and optimistic; no `useEffect` for route or server data; server state in Query, client UI state in the client-state store).
-2. If `route-tanstack` is not installed, load the `use-tanstack-*` skills for the present dependencies directly, and say the router was unavailable.
-3. Query **and** Router both present → the loader boundary is mandatory scope: `ensureQueryData` / `prefetchQuery` in the loader, `useSuspenseQuery` on the same `queryOptions` in the component (`use-tanstack-router/query-integration.md`).
-4. A TanStack package in the manifest with zero imports is still audited, and the unused dependency is a fix-plan item.
-
-```bash
-grep -rn "@tanstack/" --include=*.ts --include=*.tsx --include=*.js --include=*.jsx --include=package.json . | grep -v node_modules | head -40
-```
+Any `@tanstack/*` dependency puts the whole TanStack rule set in scope — **and** the version-matched skills the packages ship themselves through [TanStack Intent](https://tanstack.com/intent/latest). Both are in [tanstack.md](tanstack.md).
 
 ## 5. Handle what the tables do not cover
 
