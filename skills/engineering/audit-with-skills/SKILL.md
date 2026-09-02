@@ -1,9 +1,9 @@
 ---
-name: audit-project-skills
+name: audit-with-skills
 description: Audit a project against every rule of the skills its stack actually needs, then produce a prioritized fix plan. Reads package.json to pick relevant skills from every skill installed on the machine (~/.agents/skills, ~/.claude/skills, and project roots), installs any that are missing, confirms the project's AGENTS.md decision table is applied, reads 100% of each selected skill's rules, and checks every rule against the code with cited evidence. Any @tanstack/* dependency pulls in the whole TanStack rule set plus the version-matched skills the packages ship through TanStack Intent. Use when asked to "audit my project", "audit my setup", "check my skills are applied", "pick the right skills for this repo", "are my rules being followed", or when onboarding an unfamiliar codebase.
 ---
 
-# audit-project-skills
+# audit-with-skills
 
 Selects the skills this project's dependencies imply — from **every skill installed on the machine**, not just one library — guarantees they are installed and wired into `AGENTS.md`, then audits the codebase against **every rule of every selected skill** and emits a fix plan.
 

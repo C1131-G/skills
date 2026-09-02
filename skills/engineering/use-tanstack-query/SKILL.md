@@ -13,12 +13,15 @@ Apply when writing or reviewing server-state code. **Load disclosed files only f
 
 | Branch | Open |
 |---|---|
-| Keys, enabled, staleTime, parallel, queryOptions, prefetch, SSR, retry, no local-state copy | [core.md](core.md) |
+| Defining a query: keys, `enabled`, `staleTime`, `select`, `queryOptions`, no local-state copy | [core.md](core.md) |
+| When the fetch happens: parallel vs waterfall, prefetch, SSR, retry | [fetching.md](fetching.md) |
+| Keeping data fresh after a change: invalidate, write the response, seed a new entry | [invalidation.md](invalidation.md) |
 | mutate vs mutateAsync, MutationCache, concurrent optimistic, data-before-error | [mutations.md](mutations.md) |
 | select / transform, tracked queries, error/toast strategy | [render.md](render.md) |
 | Testing, placeholder vs initialData, Router+Query, WebSockets, forms, context | [advanced.md](advanced.md) |
 | Writing the cache directly: `setQueryData`, `setQueriesData`, seeding, infinite shape | [cache-writes.md](cache-writes.md) |
-| Next.js App Router: providers, HydrationBoundary, `use cache` / `cacheTag`, `updateTag` | [nextjs.md](nextjs.md) |
+| Next.js App Router: providers, HydrationBoundary, streamed prefetch | [nextjs.md](nextjs.md) |
+| Next.js cache layers: `use cache` / `cacheTag`, `updateTag`, Cache Components | [nextjs-cache.md](nextjs-cache.md) |
 
 Optimistic UI, pending state, and loading boundaries → `apply-react-async-ui`. Client UI state → a dedicated client-state store, not the query cache.
 

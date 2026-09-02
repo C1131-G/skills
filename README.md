@@ -28,6 +28,8 @@ npx skills@latest add C1131-G/skills --list
 npx skills update
 ```
 
+Every skill, with the signal that should load it, is indexed in [skills/INDEX.md](skills/INDEX.md) — one table an agent can read to route any task.
+
 ## The skills
 
 ### React and frontend
@@ -54,7 +56,7 @@ npx skills update
 | [enforce-code-quality](skills/engineering/enforce-code-quality/SKILL.md) | Minimal diffs, size limits (vendored and generated code exempt), naming, verification, commit hygiene |
 | [enforce-typescript-strict](skills/engineering/enforce-typescript-strict/SKILL.md) | Strictness rules and compiler flags |
 | [setup-agent-rules](skills/engineering/setup-agent-rules/SKILL.md) | Writing a project's `AGENTS.md` so the right skills get loaded |
-| [audit-project-skills](skills/engineering/audit-project-skills/SKILL.md) | Picking suitable skills from every skill installed on the machine, then auditing the project against all of their rules |
+| [audit-with-skills](skills/engineering/audit-with-skills/SKILL.md) | Picking suitable skills from every skill installed on the machine, then auditing the project against all of their rules |
 
 ### Other
 
@@ -74,12 +76,14 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 
 | Skill | References |
 |---|---|
-| `use-tanstack-query` | `core.md`, `mutations.md`, `render.md`, `advanced.md`, `nextjs.md` |
+| `use-tanstack-query` | `core.md`, `fetching.md`, `invalidation.md`, `mutations.md`, `cache-writes.md`, `render.md`, `advanced.md`, `nextjs.md`, `nextjs-cache.md` |
+| `apply-react-async-ui` | `pending.md`, `optimistic.md`, `boundaries.md` |
 | `apply-native-feel-nav` | `motion.md`, `touch.md`, `viewport.md` |
 | `use-tanstack-router` | `query-integration.md` |
 | `apply-toasts` | `motion.md` |
+| `apply-next-shell-nav` | `review.md` |
 | `audit-react-effects` | `CASES.md` |
-| `audit-project-skills` | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |
+| `audit-with-skills` | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |
 
 ## Making skills actually get loaded
 
