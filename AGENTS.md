@@ -2,7 +2,7 @@
 
 This repository holds agent skills — written guidance, one directory per skill, installed into agents with the `skills` CLI.
 
-## Layout
+## Project map
 
 | Path | Holds |
 |---|---|
@@ -10,6 +10,19 @@ This repository holds agent skills — written guidance, one directory per skill
 | `skills/<category>/<name>/*.md` | Disclosed reference files, opened only for the branch that needs them |
 | `skills/<category>/README.md` | Category index |
 | `skills/INDEX.md` | Routing table: every skill, the signal that loads it, its references |
+| `scripts/check-skills.py` | Proves `INDEX.md` matches the filesystem |
+
+## Which skill to load
+
+Two or more rows can apply at once — load all of them. This table is about working *on* this repo (authoring skills); it is not the `skills/INDEX.md` routing table those skills use in a *consuming* project.
+
+| When | Load |
+|---|---|
+| Writing or editing any `SKILL.md` in this repo | `enforce-code-quality` |
+| Onboarding a project, or writing/updating that project's `AGENTS.md` | `setup-agent-rules` |
+| Auditing a project against the skills its stack implies | `audit-with-skills` |
+
+<important if="you are writing a new SKILL.md or editing an existing one">
 
 ## Writing a skill
 
@@ -21,7 +34,7 @@ This repository holds agent skills — written guidance, one directory per skill
 - **Every `SKILL.md` ends with `## Done when`**, stating the observable finish condition.
 - **Every skill applies `enforce-code-quality`**, and TypeScript work also applies `enforce-typescript-strict`.
 
-## House format
+### House format
 
 ```markdown
 ---
@@ -42,6 +55,10 @@ description: <what it does> + <when to use> + <concrete triggers>
 ## Done when
 ```
 
+</important>
+
+<important if="you are about to commit a change in this repo">
+
 ## Before committing
 
 - Every `SKILL.md` parses as YAML frontmatter with `name` matching its directory.
@@ -49,3 +66,5 @@ description: <what it does> + <when to use> + <concrete triggers>
 - Every backticked skill reference names a skill that exists — deleting a skill means fixing everything that pointed at it.
 - The category README and the root README list the same set of skills as the filesystem.
 - `skills/INDEX.md` has exactly one row per `SKILL.md` on disk, and every path and reference filename in it resolves — `python scripts/check-skills.py` proves it.
+
+</important>
