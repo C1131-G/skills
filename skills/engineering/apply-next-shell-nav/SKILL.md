@@ -1,17 +1,17 @@
 ---
 name: apply-next-shell-nav
-description: Apply a persistent Next.js App Router shell with nested sidebars, correct deep-link first paint, private session chrome, and stable soft navigation. Triggers on "add a sidebar", "sidebar open/close", collapsible or responsive nav, a layout that remounts or flashes on navigation, nav state lost on refresh, and chrome that should only render for logged-in users.
+description: Apply a persistent Next.js App Router shell with nested sidebars, correct deep-link first paint, private session chrome, stable soft navigation, and the View Transitions motion layered on it. Triggers on "add a sidebar", "sidebar open/close", collapsible or responsive nav, a layout that remounts or flashes on navigation, nav state lost on refresh, chrome that should only render for logged-in users, janky or symmetric page transitions, and an active-tab indicator that jumps instead of slides.
 ---
 
 # apply-next-shell-nav
 
-Use this skill directly for Next.js application shells. Pair it with `apply-react-async-ui` for boundary placement and `apply-native-feel-nav` for visual navigation motion.
+Use this skill directly for Next.js application shells. Pair it with `apply-react-async-ui` for boundary placement and `mobile-native` for touch, safe-area, and mobile viewport behavior.
 
 Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
 Patterns for **Next.js App Router dashboards** (Cache Components era): a persistent shell, nested product sidebar, correct deep-link first paint, and soft nav that does not skeleton the chrome.
 
-Stack gate: **Next.js** in `package.json`. Prefer with `cacheComponents` / Partial Prefetching when available (Next 16+). Pair `apply-react-async-ui` for boundary shape; pair `apply-native-feel-nav` only for visual motion — this skill owns **structure and data placement**, not transitions.
+Stack gate: **Next.js** in `package.json`. Prefer with `cacheComponents` / Partial Prefetching when available (Next 16+). Pair `apply-react-async-ui` for boundary shape. This skill owns **structure, data placement, and the navigation motion on top of them**; it does not own touch behavior or mobile viewport handling — that is `mobile-native`.
 
 Canonical demo: [aurorascharff/sidebar-subnav-demo](https://github.com/aurorascharff/sidebar-subnav-demo).
 
@@ -132,6 +132,14 @@ Main content: page shell sync, rows async (rule 3).
 
 **Done when:** a slow user fetch does not block the whole sidebar; a slow table does not blank the page title.
 
+### 7. Navigation motion rides on the persistent shell
+
+Once the shell is stable (rule 1) and the pane derives from the URL (rule 2), the motion is cheap: `startViewTransition` for route changes, a direction flag so back reads as back, and Motion's `layoutId` for the active-tab indicator. Picking the wrong tool here — a hand-rolled Motion page transition — is the usual over-engineering mistake.
+
+Adding or fixing transitions → [transitions.md](transitions.md): the three-tool split, View Transitions wiring, direction-aware routes, indicator animation, timing, and reduced motion.
+
+**Done when:** route changes animate through the browser's compositor, not a JS animation loop; the nav does not re-fade; every transition has a `prefers-reduced-motion` fallback.
+
 Reviewing or fixing an existing shell rather than building one → [review.md](review.md): the anti-pattern table and the six review questions.
 
 ## Done when (skill)
@@ -141,4 +149,5 @@ Reviewing or fixing an existing shell rather than building one → [review.md](r
 - Destination clear on first paint; rows stream  
 - Fallback never shows wrong product  
 - Session chrome cached privately; soft nav stays responsive  
+- Navigation motion uses the right tool per job, with a reduced-motion fallback  
 - Rules gated (lint/typecheck/build as project allows)

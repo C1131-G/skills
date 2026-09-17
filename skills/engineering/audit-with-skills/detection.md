@@ -71,7 +71,8 @@ Highest-confidence rows first. A name in this table is only selected **if the in
 | `vitest`, `jest` | the testing skills (`vitest`, `test-backend` / its router `route-backend`) |
 | `fastify`, `express`, `hono`, a `prisma`/`drizzle` schema | `route-backend` (or its standalone equivalents) |
 | `supabase`, `@supabase/*` | the Supabase skills |
-| `framer-motion` / `motion`, view transitions, gestures, mobile viewport | the animation and native-feel skills (`animate`, `apply-native-feel-nav`) |
+| `framer-motion` / `motion`, view transitions, route-transition motion | the animation skills (`animate`), plus `apply-next-shell-nav/transitions.md` on a Next.js shell |
+| tap highlight, safe areas, `dvh`/`svh`, mobile viewport, touch gestures | the external mobile-web skill (`mobile-native`) |
 | *always, in step 4 of the procedure* | `setup-agent-rules` |
 
 Skills with no project signal — writing, video, marketing, research, design-review skills — are **not** selected by a code audit. List them as rejected with "not a code-audit skill", once, as a group.

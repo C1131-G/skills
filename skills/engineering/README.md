@@ -17,8 +17,7 @@ The full routing table, including the signal that should load each skill, is in 
 | [apply-react-async-ui](./apply-react-async-ui/SKILL.md) | Pending state, optimistic updates, loading boundaries | `pending.md`, `optimistic.md`, `boundaries.md` |
 | [audit-react-effects](./audit-react-effects/SKILL.md) | Eliminating unnecessary `useEffect` | `CASES.md` |
 | [apply-toasts](./apply-toasts/SKILL.md) | Sonner, toast-vs-inline-vs-modal, accessibility | `motion.md` |
-| [apply-native-feel-nav](./apply-native-feel-nav/SKILL.md) | Navigation motion and mobile ergonomics | `motion.md`, `touch.md`, `viewport.md` |
-| [apply-next-shell-nav](./apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure | `review.md` |
+| [apply-next-shell-nav](./apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure and navigation motion | `review.md`, `transitions.md` |
 
 ## TanStack
 
@@ -40,6 +39,6 @@ The full routing table, including the signal that should load each skill, is in 
 
 - `apply-react-async-ui` ← the optimistic/pending half of any `use-tanstack-query` mutation.
 - `use-tanstack-router` → owns the canonical Router+Query loader pattern; `use-tanstack-query/advanced.md` points at it.
-- `apply-next-shell-nav` owns shell **structure**; `apply-native-feel-nav` owns the **motion** on top of it.
+- `apply-next-shell-nav` owns shell **structure** and the **motion** on top of it (`transitions.md`); touch, safe areas and mobile viewport belong to the external `mobile-native` skill.
 - `audit-react-effects` applies wherever another system (a loader, a query, an event handler) should own the behavior instead.
 - `audit-with-skills` selects which of the above a given repository needs, and calls `setup-agent-rules` when the routing table is missing or stale.

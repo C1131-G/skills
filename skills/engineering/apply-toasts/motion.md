@@ -45,7 +45,7 @@ Keep blur and opacity subtle enough that the text inside stays fully legible aga
 
 ## 5. Respect `prefers-reduced-motion`
 
-Same principle as `apply-native-feel-nav`. Fall back to a fast opacity-only fade with no spring, scale, or position movement:
+Same principle as `apply-next-shell-nav/transitions.md`. Fall back to a fast opacity-only fade with no spring, scale, or position movement:
 
 ```tsx
 const prefersReducedMotion = useReducedMotion(); // Motion's built-in hook

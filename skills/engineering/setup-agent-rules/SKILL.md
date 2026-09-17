@@ -37,8 +37,8 @@ Load the skill before writing the code, not after. Two or more rows can apply at
 | The file imports `useQuery`, `useMutation`, `useSuspenseQuery`, or `queryClient` | `use-tanstack-query` |
 | The file has `createFileRoute`, a route loader, or reads search params | `use-tanstack-router` |
 | Showing the user a message about something that happened | `apply-toasts` |
-| Route transitions, gestures, tap feedback, safe areas, mobile viewport | `apply-native-feel-nav` |
-| A Next.js layout shell, sidebar, or streaming boundary | `apply-next-shell-nav` |
+| A Next.js layout shell, sidebar, streaming boundary, or route-transition motion | `apply-next-shell-nav` |
+| Gestures, tap feedback, safe areas, mobile viewport | `mobile-native` |
 | Onboarding a repository, or this table needs updating | `setup-agent-rules` |
 | Auditing the repo against the skills its stack implies, or checking this setup is applied | `audit-with-skills` |
 | Reading or reviewing a research paper | `read-research-paper` |

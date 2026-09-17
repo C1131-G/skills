@@ -21,7 +21,7 @@ These three concerns are one decision, not three. A mutation needs pending state
 | Where the loading UI appears | `Suspense` + `ErrorBoundary` |
 | Keep a list responsive while filtering | `useDeferredValue` |
 
-**Never use these for animation.** Visual motion is View Transitions / Motion — see `apply-native-feel-nav`.
+**Never use these for animation.** Visual motion is View Transitions / Motion — see `apply-next-shell-nav/transitions.md`.
 
 **Load disclosed files only for the branch you need.**
 
