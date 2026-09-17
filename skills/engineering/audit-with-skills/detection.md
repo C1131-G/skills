@@ -65,8 +65,7 @@ Highest-confidence rows first. A name in this table is only selected **if the in
 | **any `@tanstack/*` package** | `route-tanstack`, **plus the skills the packages ship via TanStack Intent** — see the TanStack section below |
 | `next` | the Next.js architecture / shell skills in the inventory, plus every `react` row |
 | `expo`, `react-native` | the `expo-*` / react-native skills whose descriptions match what the repo actually does (router, data fetching, UI, EAS) |
-| `sonner` | `apply-toasts` |
-| `react-hot-toast`, `react-toastify`, `@radix-ui/react-toast`, or a hand-rolled toast | `apply-toasts` — audit it, and put the migration to `sonner` in the plan as a recommendation, not a `FAIL` |
+| `sonner`, `react-hot-toast`, `react-toastify`, `@radix-ui/react-toast`, or a hand-rolled toast | the toast skill in the inventory — audit it, and put any migration to `sonner` in the plan as a recommendation, not a `FAIL` |
 | `zustand`, `jotai`, `redux` | the client-state skill in the inventory (`use-zustand`) — and check the server/client state split against the TanStack rules |
 | `vitest`, `jest` | the testing skills (`vitest`, `test-backend` / its router `route-backend`) |
 | `fastify`, `express`, `hono`, a `prisma`/`drizzle` schema | `route-backend` (or its standalone equivalents) |

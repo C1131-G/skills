@@ -38,7 +38,6 @@ Every skill, with the signal that should load it, is indexed in [skills/INDEX.md
 |---|---|
 | [apply-react-async-ui](skills/engineering/apply-react-async-ui/SKILL.md) | Pending state, optimistic updates, loading boundaries |
 | [audit-react-effects](skills/engineering/audit-react-effects/SKILL.md) | Eliminating unnecessary `useEffect` |
-| [apply-toasts](skills/engineering/apply-toasts/SKILL.md) | Sonner; toast vs inline vs modal; accessibility |
 | [apply-next-shell-nav](skills/engineering/apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure and navigation motion |
 
 ### TanStack
@@ -78,7 +77,6 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 | `use-tanstack-query` | `core.md`, `fetching.md`, `invalidation.md`, `mutations.md`, `cache-writes.md`, `render.md`, `advanced.md`, `nextjs.md`, `nextjs-cache.md` |
 | `apply-react-async-ui` | `pending.md`, `optimistic.md`, `boundaries.md` |
 | `use-tanstack-router` | `query-integration.md` |
-| `apply-toasts` | `motion.md` |
 | `apply-next-shell-nav` | `review.md`, `transitions.md` |
 | `audit-react-effects` | `CASES.md` |
 | `audit-with-skills` | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |

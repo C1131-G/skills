@@ -16,7 +16,6 @@ The full routing table, including the signal that should load each skill, is in 
 |---|---|---|
 | [apply-react-async-ui](./apply-react-async-ui/SKILL.md) | Pending state, optimistic updates, loading boundaries | `pending.md`, `optimistic.md`, `boundaries.md` |
 | [audit-react-effects](./audit-react-effects/SKILL.md) | Eliminating unnecessary `useEffect` | `CASES.md` |
-| [apply-toasts](./apply-toasts/SKILL.md) | Sonner, toast-vs-inline-vs-modal, accessibility | `motion.md` |
 | [apply-next-shell-nav](./apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure and navigation motion | `review.md`, `transitions.md` |
 
 ## TanStack

@@ -76,7 +76,7 @@ Derive `activeTab` from the navigation model and current pathname (rule 2), not 
 
 ## 5. Timing, easing, and performance
 
-- **Duration ~200-400ms.** Longer reads as sluggish; shorter feels abrupt. Prefer spring-based easing over fixed-duration curves for anything gesture-adjacent (see `apply-react-async-ui` and `apply-toasts` for adjacent interaction guidance).
+- **Duration ~200-400ms.** Longer reads as sluggish; shorter feels abrupt. Prefer spring-based easing over fixed-duration curves for anything gesture-adjacent (see `apply-react-async-ui` for adjacent interaction guidance).
 - **Animate only `transform` and `opacity`** where possible — these run on the compositor thread and stay smooth under main-thread load. Animating layout-triggering properties (`width`, `top`, `left`) causes jank, especially on low-end mobile hardware.
 - **Keep `view-transition-name` assignments few and deliberate** — each one increases the snapshot and compositing cost of every transition.
 - **No heavy synchronous work inside a `startViewTransition` callback** — it blocks the transition from starting cleanly and shows up in Interaction to Next Paint (INP).
@@ -84,7 +84,7 @@ Derive `activeTab` from the navigation model and current pathname (rule 2), not 
 
 ## 6. Respect `prefers-reduced-motion`
 
-Consistent with `apply-react-async-ui` and `apply-toasts`: check `window.matchMedia("(prefers-reduced-motion: reduce)")` (or the CSS media query) and remove spatial/spring animation, or make it effectively instantaneous.
+Consistent with `apply-react-async-ui`: check `window.matchMedia("(prefers-reduced-motion: reduce)")` (or the CSS media query) and remove spatial/spring animation, or make it effectively instantaneous.
 
 Keep every action's function available and keep its visible, keyboard-operable control. **Reduced motion changes presentation, not capability.**
 

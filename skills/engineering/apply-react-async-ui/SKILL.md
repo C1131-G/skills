@@ -5,7 +5,7 @@ description: Apply React's async UI primitives — useTransition, useActionState
 
 # apply-react-async-ui
 
-Use this skill directly for any interaction that waits on a server: pending state, optimistic updates, and loading boundaries. Pair it with `use-tanstack-query` when the data lives in a shared server-state cache, `apply-next-shell-nav` when placing boundaries in a Next.js shell, and `apply-toasts` when a failure needs a user-facing message.
+Use this skill directly for any interaction that waits on a server: pending state, optimistic updates, and loading boundaries. Pair it with `use-tanstack-query` when the data lives in a shared server-state cache and `apply-next-shell-nav` when placing boundaries in a Next.js shell.
 
 Also apply `enforce-code-quality` and, for TypeScript code, `enforce-typescript-strict` to files in scope.
 
