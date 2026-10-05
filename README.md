@@ -56,6 +56,12 @@ Every skill, with the signal that should load it, is indexed in [skills/INDEX.md
 | [setup-agent-rules](skills/engineering/setup-agent-rules/SKILL.md) | Writing a project's `AGENTS.md` so the right skills get loaded |
 | [audit-with-skills](skills/engineering/audit-with-skills/SKILL.md) | Picking suitable skills from every skill installed on the machine, then auditing the project against all of their rules |
 
+### Design
+
+| Skill | Covers |
+|---|---|
+| [kargulstudio-design](skills/design/kargulstudio-design/SKILL.md) | Design principles learned from Kargul Studio's apps, applied to your own product; Kargul button system taken close to the source |
+
 ### Other
 
 [read-research-paper](skills/productivity/read-research-paper/SKILL.md) — a three-pass method for reading papers.
@@ -80,6 +86,7 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 | `apply-next-shell-nav` | `review.md`, `transitions.md` |
 | `audit-react-effects` | `CASES.md` |
 | `audit-with-skills` | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |
+| `kargulstudio-design` | `principles.md`, `buttons.md`, `shadcn.md`, `layout.md`, `components.md`, `tokens.md`, `spacing.md`, `motion.md` |
 
 ## Making skills actually get loaded
 

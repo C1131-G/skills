@@ -38,6 +38,7 @@ Load the skill before writing the code, not after. Two or more rows can apply at
 | The file has `createFileRoute`, a route loader, or reads search params | `use-tanstack-router` |
 | A Next.js layout shell, sidebar, streaming boundary, or route-transition motion | `apply-next-shell-nav` |
 | Gestures, tap feedback, safe areas, mobile viewport | `mobile-native` |
+| Designing or restyling UI with the Kargul principles — a new screen, a button, spacing, a panel, menu or dialog | `kargulstudio-design` |
 | Onboarding a repository, or this table needs updating | `setup-agent-rules` |
 | Auditing the repo against the skills its stack implies, or checking this setup is applied | `audit-with-skills` |
 | Reading or reviewing a research paper | `read-research-paper` |

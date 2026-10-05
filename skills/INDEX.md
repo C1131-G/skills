@@ -23,6 +23,7 @@ Paths are relative to this file. Every skill lives at `<category>/<name>/SKILL.m
 | apply-next-shell-nav | `next`; a sidebar or app shell; layout that remounts or flashes on navigation; route transitions and active-tab indicator motion | [engineering/apply-next-shell-nav/SKILL.md](engineering/apply-next-shell-nav/SKILL.md) | `review.md`, `transitions.md` |
 | setup-agent-rules | onboarding a repository; "set up AGENTS.md"; skills exist but never load | [engineering/setup-agent-rules/SKILL.md](engineering/setup-agent-rules/SKILL.md) | — |
 | audit-with-skills | "audit my project", "check my skills are applied", "which skills does this repo need" | [engineering/audit-with-skills/SKILL.md](engineering/audit-with-skills/SKILL.md) | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |
+| kargulstudio-design | designing or restyling app UI with the Kargul principles; a shadcn/ui or Tailwind + Radix app that should feel polished, dense but calm; "button padding feels off", "spacing is inconsistent"; a Kargul-style `buttonVariants` | [design/kargulstudio-design/SKILL.md](design/kargulstudio-design/SKILL.md) | `principles.md`, `buttons.md`, `shadcn.md`, `layout.md`, `components.md`, `tokens.md`, `spacing.md`, `motion.md` |
 | read-research-paper | a paper, an arXiv or DOI link, "is this paper any good" | [productivity/read-research-paper/SKILL.md](productivity/read-research-paper/SKILL.md) | — |
 
 ## Pairings
