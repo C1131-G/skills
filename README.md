@@ -39,6 +39,7 @@ Every skill, with the signal that should load it, is indexed in [skills/INDEX.md
 | [apply-react-async-ui](skills/engineering/apply-react-async-ui/SKILL.md) | Pending state, optimistic updates, loading boundaries |
 | [audit-react-effects](skills/engineering/audit-react-effects/SKILL.md) | Eliminating unnecessary `useEffect` |
 | [apply-next-shell-nav](skills/engineering/apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure and navigation motion |
+| [setup-nextjs](skills/engineering/setup-nextjs/SKILL.md) | Next.js baseline: upgrade, drop ESLint/Prettier, 16.4 `next.config.ts`, TypeScript, Ultracite + Oxlint, initial push |
 
 ### TanStack
 
@@ -84,6 +85,7 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 | `apply-react-async-ui` | `pending.md`, `optimistic.md`, `boundaries.md` |
 | `use-tanstack-router` | `query-integration.md` |
 | `apply-next-shell-nav` | `review.md`, `transitions.md` |
+| `setup-nextjs` | `remove-eslint-prettier.md`, `next-config.md`, `ultracite.md` |
 | `audit-react-effects` | `CASES.md` |
 | `audit-with-skills` | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |
 | `kargulstudio-design` | `principles.md`, `buttons.md`, `shadcn.md`, `layout.md`, `components.md`, `tokens.md`, `spacing.md`, `motion.md` |

@@ -17,6 +17,7 @@ The full routing table, including the signal that should load each skill, is in 
 | [apply-react-async-ui](./apply-react-async-ui/SKILL.md) | Pending state, optimistic updates, loading boundaries | `pending.md`, `optimistic.md`, `boundaries.md` |
 | [audit-react-effects](./audit-react-effects/SKILL.md) | Eliminating unnecessary `useEffect` | `CASES.md` |
 | [apply-next-shell-nav](./apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure and navigation motion | `review.md`, `transitions.md` |
+| [setup-nextjs](./setup-nextjs/SKILL.md) | Next.js baseline: upgrade, drop ESLint/Prettier, 16.4 `next.config.ts`, TypeScript, Ultracite + Oxlint, initial push | `remove-eslint-prettier.md`, `next-config.md`, `ultracite.md` |
 
 ## TanStack
 

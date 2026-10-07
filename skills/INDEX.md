@@ -21,6 +21,7 @@ Paths are relative to this file. Every skill lives at `<category>/<name>/SKILL.m
 | use-tanstack-query | `@tanstack/react-query`; `useQuery`, `useMutation`, `queryClient`; stale list after save | [engineering/use-tanstack-query/SKILL.md](engineering/use-tanstack-query/SKILL.md) | `core.md`, `fetching.md`, `invalidation.md`, `mutations.md`, `cache-writes.md`, `render.md`, `advanced.md`, `nextjs.md`, `nextjs-cache.md` |
 | use-tanstack-router | `@tanstack/react-router`; `createFileRoute`, route loaders, search params | [engineering/use-tanstack-router/SKILL.md](engineering/use-tanstack-router/SKILL.md) | `query-integration.md` |
 | apply-next-shell-nav | `next`; a sidebar or app shell; layout that remounts or flashes on navigation; route transitions and active-tab indicator motion | [engineering/apply-next-shell-nav/SKILL.md](engineering/apply-next-shell-nav/SKILL.md) | `review.md`, `transitions.md` |
+| setup-nextjs | setting up or bootstrapping a Next.js app; a fresh `create-next-app` repo; "remove ESLint/Prettier", "set up Ultracite/Oxlint", "set up next.config" | [engineering/setup-nextjs/SKILL.md](engineering/setup-nextjs/SKILL.md) | `remove-eslint-prettier.md`, `next-config.md`, `ultracite.md` |
 | setup-agent-rules | onboarding a repository; "set up AGENTS.md"; skills exist but never load | [engineering/setup-agent-rules/SKILL.md](engineering/setup-agent-rules/SKILL.md) | — |
 | audit-with-skills | "audit my project", "check my skills are applied", "which skills does this repo need" | [engineering/audit-with-skills/SKILL.md](engineering/audit-with-skills/SKILL.md) | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |
 | kargulstudio-design | designing or restyling app UI with the Kargul principles; a shadcn/ui or Tailwind + Radix app that should feel polished, dense but calm; "button padding feels off", "spacing is inconsistent"; a Kargul-style `buttonVariants` | [design/kargulstudio-design/SKILL.md](design/kargulstudio-design/SKILL.md) | `principles.md`, `buttons.md`, `shadcn.md`, `layout.md`, `components.md`, `tokens.md`, `spacing.md`, `motion.md` |
@@ -35,6 +36,7 @@ Rows that almost always fire together:
 | `use-tanstack-query` | `apply-react-async-ui` | Query owns keys, cache and invalidation; async-ui owns pending and optimistic UI |
 | `use-tanstack-query` + `use-tanstack-router` | `use-tanstack-router/query-integration.md` | The loader boundary: `ensureQueryData` in the loader, `useSuspenseQuery` on the same `queryOptions` |
 | any of the above | `enforce-code-quality` | Always in scope for a code change |
+| `setup-nextjs` | `enforce-typescript-strict` | The TypeScript upgrade step ends with a strict `tsconfig.json` |
 | `audit-with-skills` | `setup-agent-rules` | The audit applies it when the project's decision table is missing or stale |
 
 ## Invariants
