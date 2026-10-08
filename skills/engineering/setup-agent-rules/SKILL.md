@@ -43,6 +43,7 @@ Load the skill before writing the code, not after. Two or more rows can apply at
 | Onboarding a repository, or this table needs updating | `setup-agent-rules` |
 | Auditing the repo against the skills its stack implies, or checking this setup is applied | `audit-with-skills` |
 | Reading or reviewing a research paper | `read-research-paper` |
+| Reviewing a stock portfolio or picking stocks for new money | `audit-stock-portfolio` |
 ```
 
 Keep it a table. It sits in context for every session in this repository, so length is a real cost — do not expand it into prose or add commentary between rows.
