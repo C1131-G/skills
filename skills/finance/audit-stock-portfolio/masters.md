@@ -1,6 +1,6 @@
 # The three masters as checklists
 
-Run each stock through all three. A stock that fails Buffett's business test is not rescued by the other two.
+Run each stock through all three. A company is suggested only when it passes **all three** — Buffett, Munger and Anand Srinivasan. Failing any one is not outweighed by the other two. Name each mentor and their verdict in the report and in the company brief.
 
 ## Warren Buffett — a wonderful business at a fair price
 
@@ -34,6 +34,6 @@ Never attribute a specific stock pick or quote to any of the three without a sou
 
 | Result | Meaning |
 |---|---|
-| Passes all three | Candidate for Hold / Add — go to valuation and ownership |
-| Moat or management fails | Exit or avoid, regardless of price |
+| Passes all three | Candidate for Hold / Add — go to valuation and ownership, then write a brief |
+| Any one mentor fails | Not suggested. Existing holding: Trim or Exit; moat or management failure means Exit regardless of price |
 | Business passes, price fails | Watchlist with a target buy price |

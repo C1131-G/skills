@@ -46,8 +46,8 @@ Nifty 50 P/E vs 10-year median, India VIX, one line on what it means for timing.
 Concentration, sector mix, number of stocks, review-checklist hits.
 
 ## Where the new ₹<amount> could go
-| Stock | Amount ₹ | Tranches | Moat | Fair value range | Margin of safety | How it could fail |
-Plus any index-fund or debt portion from the allocation table.
+| Stock | Amount ₹ | Tranches | Buffett | Munger | Anand Srinivasan | Margin of safety | Brief |
+Every row shows ✅ for all three mentors and links its brief (`stock-research/<date>/<SYMBOL>.md`, see `company-brief.md`). Plus any index-fund or debt portion from the allocation table.
 
 ## Watchlist
 Good businesses waiting for a better price, with the buy-below price.
