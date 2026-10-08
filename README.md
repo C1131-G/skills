@@ -39,6 +39,7 @@ Every skill, with the signal that should load it, is indexed in [skills/INDEX.md
 | [apply-react-async-ui](skills/engineering/apply-react-async-ui/SKILL.md) | Pending state, optimistic updates, loading boundaries |
 | [audit-react-effects](skills/engineering/audit-react-effects/SKILL.md) | Eliminating unnecessary `useEffect` |
 | [apply-next-shell-nav](skills/engineering/apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure and navigation motion |
+| [aurora-audit](skills/engineering/aurora-audit/SKILL.md) | Audit a Next.js 16 app against Aurora Scharff's next16 reference-app structure, with a cited fix plan |
 | [setup-nextjs](skills/engineering/setup-nextjs/SKILL.md) | Next.js baseline: upgrade, drop ESLint/Prettier, 16.4 `next.config.ts`, TypeScript, Ultracite + Oxlint, initial push |
 
 ### TanStack
@@ -91,6 +92,7 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 | `apply-react-async-ui` | `pending.md`, `optimistic.md`, `boundaries.md` |
 | `use-tanstack-router` | `query-integration.md` |
 | `apply-next-shell-nav` | `review.md`, `transitions.md` |
+| `aurora-audit` | `actions.md`, `caching.md`, `client-cache.md`, `components.md`, `errors.md`, `folders.md`, `interactions.md`, `navigation.md`, `pages.md`, `queries.md`, `report.md`, `skeletons.md`, `suspense.md`, `testing.md`, `tooling.md` |
 | `setup-nextjs` | `remove-eslint-prettier.md`, `next-config.md`, `ultracite.md` |
 | `audit-react-effects` | `CASES.md` |
 | `audit-with-skills` | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |

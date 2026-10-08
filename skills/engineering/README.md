@@ -17,6 +17,7 @@ The full routing table, including the signal that should load each skill, is in 
 | [apply-react-async-ui](./apply-react-async-ui/SKILL.md) | Pending state, optimistic updates, loading boundaries | `pending.md`, `optimistic.md`, `boundaries.md` |
 | [audit-react-effects](./audit-react-effects/SKILL.md) | Eliminating unnecessary `useEffect` | `CASES.md` |
 | [apply-next-shell-nav](./apply-next-shell-nav/SKILL.md) | Next.js App Router shell structure and navigation motion | `review.md`, `transitions.md` |
+| [aurora-audit](./aurora-audit/SKILL.md) | Auditing a Next.js 16 app against Aurora Scharff's next16 reference-app structure: folders, pages, Suspense, skeletons, queries, actions, caching, tests | `actions.md`, `caching.md`, `client-cache.md`, `components.md`, `errors.md`, `folders.md`, `interactions.md`, `navigation.md`, `pages.md`, `queries.md`, `report.md`, `skeletons.md`, `suspense.md`, `testing.md`, `tooling.md` |
 | [setup-nextjs](./setup-nextjs/SKILL.md) | Next.js baseline: upgrade, drop ESLint/Prettier, 16.4 `next.config.ts`, TypeScript, Ultracite + Oxlint, initial push | `remove-eslint-prettier.md`, `next-config.md`, `ultracite.md` |
 
 ## TanStack
@@ -41,4 +42,5 @@ The full routing table, including the signal that should load each skill, is in 
 - `use-tanstack-router` → owns the canonical Router+Query loader pattern; `use-tanstack-query/advanced.md` points at it.
 - `apply-next-shell-nav` owns shell **structure** and the **motion** on top of it (`transitions.md`); touch, safe areas and mobile viewport belong to the external `mobile-native` skill.
 - `audit-react-effects` applies wherever another system (a loader, a query, an event handler) should own the behavior instead.
+- `aurora-audit` checks structure and picks; it routes interaction mechanics to `apply-react-async-ui`, effects to `audit-react-effects`, client caches to `use-tanstack-query`, and shell/motion to `apply-next-shell-nav`.
 - `audit-with-skills` selects which of the above a given repository needs, and calls `setup-agent-rules` when the routing table is missing or stale.

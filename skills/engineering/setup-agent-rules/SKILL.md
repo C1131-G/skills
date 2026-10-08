@@ -37,6 +37,7 @@ Load the skill before writing the code, not after. Two or more rows can apply at
 | The file imports `useQuery`, `useMutation`, `useSuspenseQuery`, or `queryClient` | `use-tanstack-query` |
 | The file has `createFileRoute`, a route loader, or reads search params | `use-tanstack-router` |
 | A Next.js layout shell, sidebar, streaming boundary, or route-transition motion | `apply-next-shell-nav` |
+| Auditing a Next.js 16 app's structure — pages, Suspense, queries, actions, caching | `aurora-audit` |
 | Setting up a Next.js app — upgrade, ESLint/Prettier removal, `next.config.ts`, Ultracite | `setup-nextjs` |
 | Gestures, tap feedback, safe areas, mobile viewport | `mobile-native` |
 | Designing or restyling UI with the Kargul principles — a new screen, a button, spacing, a panel, menu or dialog | `kargulstudio-design` |
