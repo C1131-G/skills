@@ -67,7 +67,7 @@ Every skill, with the signal that should load it, is indexed in [skills/INDEX.md
 
 | Skill | Covers |
 |---|---|
-| [audit-stock-portfolio](skills/finance/audit-stock-portfolio/SKILL.md) | Buffett / Munger / Anand Srinivasan value review of an NSE/BSE portfolio from a Google Sheet: interview, fundamentals, promoter and insider activity, technicals for entry timing, sized shortlist for new money, and a plain-language brief per suggested company with all three mentors' verdicts |
+| [audit-stock-portfolio](skills/finance/audit-stock-portfolio/SKILL.md) | Buffett / Munger / Anand Srinivasan value review of an NSE/BSE portfolio from a Google Sheet: no interview — just the sheet and the amount — then fundamentals, promoter and insider activity, technicals for entry timing, sized shortlist for new money, and a plain-language brief per suggested company with all three mentors' verdicts |
 
 ### Other
 
@@ -94,7 +94,7 @@ Larger skills are a thin `SKILL.md` router over disclosed reference files, so on
 | `setup-nextjs` | `remove-eslint-prettier.md`, `next-config.md`, `ultracite.md` |
 | `audit-react-effects` | `CASES.md` |
 | `audit-with-skills` | `detection.md`, `tanstack.md`, `evidence.md`, `report.md` |
-| `audit-stock-portfolio` | `interview.md`, `holdings.md`, `masters.md`, `fundamentals.md`, `ownership.md`, `technicals.md`, `report.md`, `company-brief.md` |
+| `audit-stock-portfolio` | `holdings.md`, `masters.md`, `fundamentals.md`, `ownership.md`, `technicals.md`, `report.md`, `company-brief.md` |
 | `kargulstudio-design` | `principles.md`, `buttons.md`, `shadcn.md`, `layout.md`, `components.md`, `tokens.md`, `spacing.md`, `motion.md` |
 
 ## Making skills actually get loaded

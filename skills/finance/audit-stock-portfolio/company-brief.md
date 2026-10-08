@@ -2,7 +2,7 @@
 
 Every company the report suggests buying or adding to gets its own brief: a Markdown file the investor can read, save and come back to. Write it for someone who has never read a balance sheet. If a term needs jargon, explain it in brackets the first time.
 
-Save to `stock-research/<YYYY-MM-DD>/<SYMBOL>.md` in the working directory, link every brief from the report, and tell the investor the paths. If the session has a first-party document tool (for example Claude Docs), offer to publish the briefs there as well.
+Save to `stock-research/<YYYY-MM-DD>/<SYMBOL>.md` in the working directory, link every brief from the report, and tell the investor the paths. If the session has a first-party document tool (for example Claude Docs), publish the briefs there as well.
 
 ## Rules
 

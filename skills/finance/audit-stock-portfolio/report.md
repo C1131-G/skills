@@ -2,7 +2,7 @@
 
 ## Asset allocation first
 
-Start from the interview, before choosing stocks:
+No interview is run. Use the **moderate** row by default and state it in the report's assumptions:
 
 | Profile | Direct stocks | Index / mutual funds | Debt, FD, gold |
 |---|---|---|---|
@@ -10,11 +10,11 @@ Start from the interview, before choosing stocks:
 | Moderate, 5–10 year horizon | 30–50% | 30–40% | Rest |
 | Aggressive, 10+ years, held through a crash before | 50–70% | 20–30% | Rest |
 
-Money needed within 3 years and the emergency fund are outside these numbers.
+Add one line to the report: money needed within 3 years, and a 6-month emergency fund, should stay out of stocks.
 
 ## Position sizing
 
-- Max per stock: 10% (conservative), 15% (moderate), 20% (aggressive, high conviction only).
+- Max per stock: 15% (moderate default).
 - Max per sector: 30–35%.
 - Small caps combined: at most 25% of direct stocks, less for conservative profiles.
 - Stagger lump sums over 3–6 months when Nifty P/E is above its 10-year median.
@@ -33,8 +33,8 @@ Money needed within 3 years and the emergency fund are outside these numbers.
 # Portfolio review — <date>
 > Research support, not SEBI-registered investment advice. Data as of <date>, sources listed below.
 
-## Your profile
-Goal, horizon, risk, amount, constraints — one short paragraph.
+## Assumptions
+Amount, default moderate profile, 5+ year horizon — one short paragraph.
 
 ## Market today
 Nifty 50 P/E vs 10-year median, India VIX, one line on what it means for timing.
@@ -56,4 +56,4 @@ Good businesses waiting for a better price, with the buy-below price.
 Every URL used, with date.
 ```
 
-End by asking which stock the investor wants to go deeper on, and suggest a review date (next quarterly results).
+End with a review date (next quarterly results).
